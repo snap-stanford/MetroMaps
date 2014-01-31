@@ -1,0 +1,14 @@
+// ttypeID	type
+10	IN
+3	JJ
+12	RB
+9	VBG
+8	VBD
+0	FW
+5	JJR
+2	NN
+6	VB
+11	VBN
+1	NNS
+7	VBP
+4	VBZ

@@ -1,8 +1,21 @@
+import argparse
+from ConfigParser import ConfigParser
+import 
+def RunInputHelper():
 
 
-from mm.inputhelpers import whitelistcounter
+def Main(config_filename):
+    configs = ConfigParser()
+    configs.read(config_filename)
+    config_sections = configs._sections
+    input_helper = inputhelper.ReadConfig(config_sections.get('input_helper'))
+    input_helper.run()
+
+
 
 if __name__=='__main__':
-    
-    token_counter = tokencounter.WhiteListCounter(input_files)
-    tokens = token_counter.get_token_counts() 
+    parser = argparse.ArgumentParser(description='Run Metromaps by specifying a config file (e.g. default.ini)')
+    parser.add_argument('config_file', help='See default.ini for configurations')
+    args = parser.parse_args()
+    Main(args.config_file)
+    print args.config_file

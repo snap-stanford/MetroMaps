@@ -1,0 +1,4 @@
+Currently working on input handler for LOTR which is helping me to understand the different engineering aspects of the project
+
+I should separate the layer of configuration from the actual use instead of trying to mix the different layers! 
+ 
