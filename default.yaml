@@ -1,0 +1,10 @@
+input_helper:
+    name: whitelistcounter
+    encoding: UTF-8
+    whitelist: domains/lotr/data/whitelist.txt
+    input_directory: domains/lotr/data/rawtext
+
+
+
+
+

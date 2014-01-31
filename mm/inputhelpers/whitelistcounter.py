@@ -1,48 +1,60 @@
 import json
-import utils
-import constants
-import ConfigParser
 from stringprocessor import StringProcessor
 
 class WhiteListCounter():
 
-    @classmethod
-    def FactoryFromConfig(cls, config):
-        whitelist = config.get('whitelist')
-        if not whitelist:
-            raise ConfigParser.NoOptionError('whitelist','input_helper')
+    # @classmethod
+    # def FactoryFromConfig(cls, config):
+    #     whitelist = config.get('whitelist')
+    #     if not whitelist:
+    #         raise ConfigParser.NoOptionError('whitelist','input_helper')
 
 
-        total_counts_filename = config.get('total_counts_filename')
-        docname_to_id_filename = config.get('doc_counts_filename')
-        token_to_id_filename = config.get('token_to_id_filename')
+    #     total_counts_filename = config.get('total_counts_filename')
+    #     docname_to_id_filename = config.get('doc_counts_filename')
+    #     token_to_id_filename = config.get('token_to_id_filename')
 
-        total_counts_json = {}
-        docname_to_id_json = {}
-        token_to_id_json = {}
-        if total_counts_filename:
-            with open(total_counts_filename) as f:
-                total_counts_json = json.load(f)
-        if docname_to_id_filename:
-            with open(docname_to_id_json) as f:
-                docname_to_id_json = json.load(f)
-        if token_to_id_filename:
-            with open(token_to_id_filename) as f:
-                token_to_id_json = json.load(f)
+    #     total_counts_json = {}
+    #     docname_to_id_json = {}
+    #     token_to_id_json = {}
+    #     if total_counts_filename:
+    #         with open(total_counts_filename) as f:
+    #             total_counts_json = json.load(f)
+    #     if docname_to_id_filename:
+    #         with open(docname_to_id_json) as f:
+    #             docname_to_id_json = json.load(f)
+    #     if token_to_id_filename:
+    #         with open(token_to_id_filename) as f:
+    #             token_to_id_json = json.load(f)
         
-        return WhiteListCounter(whitelist.get('whitelist'), total_counts=total_counts_json.get('total_counts', {}), ...
-            docname_to_id=docname_to_id_json.get('docname_to_id',{}), token_to_id_json.get('token_to_id', {}), config=config)
+    #     return WhiteListCounter(whitelist.get('whitelist'), total_counts=total_counts_json.get('total_counts', {}), ...
+    #         docname_to_id=docname_to_id_json.get('docname_to_id',{}), token_to_id_json.get('token_to_id', {}), config=config)
 
+    def __read_whitelist(self, whitelist_filename):
+        l = []
+        with open(whitelist_filename) as f:
+            for line in f:
+                l += [line.strip()]
+        return set(l)
 
+    def __get_default_out_format(self):
+        formats = {
+            "global_tokens" : 'global_tokens.json'
+            "representative_tokens" : 'representative_tokens.json'
+            "stem_doc_counts" : 'stem_doc_counts'
+
+        }
         
 
-    def __init__(self, whitelist, total_counts={}, docname_to_id={}, token_to_id={}, config={}):
+    def __init__(self,whitelist,out_formats,input_directory,name='whitelistcounter',encoding='UTF-8'):
         self.whitelist = whitelist
+        self.out_formats = out_formats
+        self.input_directory = input_directory
         self.token_to_id = {}
         self.docname_to_id = {}
         self.total_counts = {}
         self.doc_counts = {}
-        self.stringprocessor = StringProcessor(config.get('encoding', 'UTF-8'))
+        self.stringprocessor = StringProcessor(encoding)
         
 
     def toJSON(self, stream):
@@ -99,3 +111,5 @@ class WhiteListCounter():
             full_path = os.path.join(dirname, filename)
             run_filename(full_path)
     
+def construct(config):
+    return WhiteListCounter(**config)

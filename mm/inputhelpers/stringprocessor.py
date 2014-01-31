@@ -7,9 +7,10 @@ class StringProcessor():
 
 
     def clean(self, raw_string):
-        isinstance(raw_string, str):
+        raw_string = raw_string.lower()
+        if isinstance(raw_string, str):
             return unicode(raw_string, self.encoding)
-        isinstance(raw_string, unicode):
+        if isinstance(raw_string, unicode):
             return raw_string
 
 

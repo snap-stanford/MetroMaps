@@ -1,8 +1,16 @@
 class NewsHelper():
-    @classmethod
-    def FactoryFromConfig(cls, config):
+
+    def __init__(self, whitelist, name='new_helper'):
         pass
 
+    def run(self):
+        print 'running'
 
-    def __init__(self):
-        pass
+    def save(self):
+        print 'saving'
+
+    def __str__(self):
+        return 'this is a newshelper'
+
+def construct(configs):
+    return NewsHelper(**configs)
