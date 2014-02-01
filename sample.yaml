@@ -1,7 +1,7 @@
 # tree format
-treeroot:
+treeroot: 
     branch1:
-        name: Node 1
+        name: hi
         branch1-1:
             name: Node 1-1
     branch2:

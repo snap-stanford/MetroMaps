@@ -30,24 +30,24 @@ class WhiteListCounter():
     #     return WhiteListCounter(whitelist.get('whitelist'), total_counts=total_counts_json.get('total_counts', {}), ...
     #         docname_to_id=docname_to_id_json.get('docname_to_id',{}), token_to_id_json.get('token_to_id', {}), config=config)
 
-    def __read_whitelist(self, whitelist_filename):
+    def _read_whitelist(self, whitelist_filename):
         l = []
         with open(whitelist_filename) as f:
             for line in f:
-                l += [line.strip()]
+                l += [line.strip().lower()]
         return set(l)
 
-    def __get_default_out_format(self):
-        formats = {
-            "global_tokens" : 'global_tokens.json'
-            "representative_tokens" : 'representative_tokens.json'
-            "stem_doc_counts" : 'stem_doc_counts'
+    # def __get_default_out_format(self):
+    #     formats = {
+    #         "global_tokens" : 'global_tokens.json'
+    #         "representative_tokens" : 'representative_tokens.json'
+    #         "stem_doc_counts" : 'stem_doc_counts'
 
-        }
+    #     }
         
 
-    def __init__(self,whitelist,out_formats,input_directory,name='whitelistcounter',encoding='UTF-8'):
-        self.whitelist = whitelist
+    def __init__(self,whitelist,out_formats,input_directory,threads=1,name='whitelistcounter',encoding='UTF-8'):
+        self.whitelist = self._read_whitelist(whitelist)
         self.out_formats = out_formats
         self.input_directory = input_directory
         self.token_to_id = {}
@@ -55,7 +55,21 @@ class WhiteListCounter():
         self.total_counts = {}
         self.doc_counts = {}
         self.stringprocessor = StringProcessor(encoding)
-        
+    
+    def run_filename(self, filename):
+        with open(filename) as fi:
+            for line in fi:
+                line = line.strip()
+                
+                for word in line.split():
+                    word = self.stringprocessor.clean(word)
+                    word_id = _get_token_id(self, word)
+                        
+    def run(self):
+        filenames = os.listdir(dirname)
+        for filename in filenames:
+            full_path = os.path.join(dirname, filename)
+            self.run_filename(full_path)
 
     def toJSON(self, stream):
         # returns four fields : "total_counts", "doc_counts", and "token_to_id" and "docname_to_id"

@@ -3,6 +3,17 @@ input_helper:
     encoding: UTF-8
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
+    threads: 1
+    out: 
+        together: # puts everything into one big json dictionary in the same json file
+            mode: off
+            outfile: domains/lotr/out/mm_input.json
+        separated: # divides the three main input components into three files. see below
+            mode: on
+            outfile_global_tokens: domains/lotr/out/global_tokens.json # stem_to_id, id_to_repr_token
+            outfile_global_counts: domains/lotr/out/global_counts.json
+            outfile_doc_counts: domains/lotr/out/mm_doc_counts.json
+        
 
 
 
