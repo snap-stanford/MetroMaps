@@ -34,7 +34,7 @@ class WhiteListCounter():
         l = []
         with open(whitelist_filename) as f:
             for line in f:
-                l += [line.strip().lower()]
+                l += [self.stringprocessor.clean(line)]
         return set(l)
 
     # def __get_default_out_format(self):
@@ -46,9 +46,9 @@ class WhiteListCounter():
     #     }
         
 
-    def __init__(self,whitelist,out_formats,input_directory,threads=1,name='whitelistcounter',encoding='UTF-8'):
+    def __init__(self,whitelist,out_config,input_directory,threads=1,name='whitelistcounter',encoding='UTF-8'):
         self.whitelist = self._read_whitelist(whitelist)
-        self.out_formats = out_formats
+        self.out_config = out_config
         self.input_directory = input_directory
         self.token_to_id = {}
         self.docname_to_id = {}
@@ -56,14 +56,26 @@ class WhiteListCounter():
         self.doc_counts = {}
         self.stringprocessor = StringProcessor(encoding)
     
+
+    def _count_word(self, word_id, doc_id=None):
+        current_count = self.total_counts.get(word_id, 0)
+        self.total_counts[word_id] = current_count + 1
+        if doc_id:
+            current_doc_counts = self.doc_counts.get(doc_id, {})
+            current_word_in_doc = current_doc_counts.get(word_id, 0)
+            current_doc_counts[word_id] = current_word_in_doc + 1
+            self.doc_counts[doc_id] = current_doc_counts
+    
     def run_filename(self, filename):
         with open(filename) as fi:
+            doc_id = self._get_doc_id(filename)
             for line in fi:
                 line = line.strip()
-                
                 for word in line.split():
                     word = self.stringprocessor.clean(word)
-                    word_id = _get_token_id(self, word)
+                    if word in self.whitelistcounter:
+                        word_id = _get_token_id(self, word)
+                        self._count_word(word_id, doc_id)
                         
     def run(self):
         filenames = os.listdir(dirname)
@@ -75,6 +87,33 @@ class WhiteListCounter():
         # returns four fields : "total_counts", "doc_counts", and "token_to_id" and "docname_to_id"
         raise NotImplementedError('to json not yet supported')
 
+    def _get_representative_tokens(self):
+        # reverse token_to_id with the counts from global counts
+        return {v: k for v,k in self.token_to_id.items()}
+    
+    def save(self):
+    '''
+    out_config: 
+        together: # puts everything into one big json dictionary in the same json file
+            mode: off
+            outfile: domains/lotr/out/mm_input.json
+        separated: # divides the three main input components into three files. see below
+            mode: on
+            outfile_global_tokens: domains/lotr/out/global_tokens.json # stem_to_id, id_to_repr_token
+            outfile_global_counts: domains/lotr/out/global_counts.json
+            outfile_doc_counts: domains/lotr/out/mm_doc_counts.json
+        legacy: # remove this before the project is over
+            mode: on
+            outfile_global_tokens: domains/lotr/out/legacy/global_tokens.txt
+            outfile_representative_tokens: domains/lotr/out/legacy/representative_tokens.txt
+            outfile_doc_counts: domains/lotr/out/legacy/doc_counts.txt
+        '''
+        if self.out_config.get('together', {}).get('mode',None)=='on':
+           # return all of the data into one big dictionary
+            with open(self.out_config.get('together', {}).get('outfile'), 'w') as out_file:
+                data = {}
+                data['global_tokens'] = self.token_to_id
+                data['representative_tokens'] = word._get_representative_tokens()
     def _get_token_id(self, token, fail_on_none=False):
         token_id = self.token_to_id.get(token)
         if not token_id:

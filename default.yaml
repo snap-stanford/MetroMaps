@@ -4,7 +4,7 @@ input_helper:
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
     threads: 1
-    out: 
+    out_config: 
         together: # puts everything into one big json dictionary in the same json file
             mode: off
             outfile: domains/lotr/out/mm_input.json
@@ -13,6 +13,11 @@ input_helper:
             outfile_global_tokens: domains/lotr/out/global_tokens.json # stem_to_id, id_to_repr_token
             outfile_global_counts: domains/lotr/out/global_counts.json
             outfile_doc_counts: domains/lotr/out/mm_doc_counts.json
+        legacy: # remove this before the project is over
+            mode: on
+            outfile_global_tokens: domains/lotr/out/legacy/global_tokens.txt
+            outfile_representative_tokens: domains/lotr/out/legacy/representative_tokens.txt
+            outfile_doc_counts: domains/lotr/out/legacy/doc_counts.txt
         
 
 
