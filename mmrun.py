@@ -1,3 +1,5 @@
+#!/usr/local/bin/python2.7
+
 import argparse
 import mm.inputhelpers
 import mm.inputhelpers.factory
@@ -8,8 +10,10 @@ import yaml
 def Run_input_handler(configs):
     print configs
     handler_input = mm.inputhelpers.factory.ReadConfig(configs)
-    # handler_input.run()
-    # handler_input.save()
+    print 'running'
+    handler_input.run()
+    print 'saving'
+    handler_input.save()
 
 
 

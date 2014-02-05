@@ -12,5 +12,4 @@ def ReadConfig(configs):
     input_helper_name = input_helper_configs['name']
     helper_module = __import__(input_helper_name, globals=globals())
     helper = helper_module.construct(input_helper_configs)
-    helper.run()
-    print helper
+    return helper
