@@ -85,6 +85,8 @@ class WhiteListCounter():
                 json.dump(doc_counts, out_file)
             with open(separated_representative_tokens, 'w') as out_file:
                 json.dump(representative_tokens, out_file)
+        if legacy.get('mode', None)==True:
+            
 
 
     def _get_token_id(self, token, fail_on_none=False):
