@@ -21,11 +21,11 @@ input_helper:
             outfile_representative_tokens: domains/lotr/out/legacy/representative_tokens.txt
             outfile_doc_counts: domains/lotr/out/legacy/doc_counts.txt
     
-    docs_metadata: domains/lotr/data/doc_meta.json
+    #docs_metadata: domains/lotr/data/doc_meta.json
 
 
 
 input:
     globals: domains/lotr/out/mm_input.json
     global_tokens: domains/lotr/out/global_tokens.json
-    ...
+    

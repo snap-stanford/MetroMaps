@@ -2,6 +2,8 @@ import json
 from stringprocessor import StringProcessor
 import os
 import os.path
+import mm.config
+
 class WhiteListCounter():
     def __init__(self,whitelist,out_config,input_directory,threads=1,name='whitelistcounter',in_encoding='UTF-8', encoding='UTF-8'):
         self.sp = StringProcessor(in_encoding, encoding)
@@ -14,6 +16,8 @@ class WhiteListCounter():
         self.whitelist = self._read_whitelist(whitelist)
         self._next_token_id = 0
         self._next_doc_id = 0
+
+
     def _read_whitelist(self, whitelist_filename):
         l = []
         with open(whitelist_filename) as f:
@@ -30,10 +34,10 @@ class WhiteListCounter():
             current_word_in_doc = current_doc_counts.get(word_id, 0)
             current_doc_counts[word_id] = current_word_in_doc + 1
             self.doc_counts[doc_id] = current_doc_counts
+
     def run_filename(self, filename):
         with open(filename) as fi:
             doc_id = self._get_doc_id(filename)
-            print doc_id
             for line in fi:
                 line = line.strip()
                 for word in line.split():
@@ -60,7 +64,7 @@ class WhiteListCounter():
         global_counts = self.total_counts
         representative_tokens = self._get_representative_tokens()
         doc_counts = self.doc_counts
-        import pdb; pdb.set_trace()
+
         if together.get('mode',None)==True:
            # return all of the data into one big dictionary
             together_out = together["outfile"]
@@ -85,9 +89,7 @@ class WhiteListCounter():
                 json.dump(doc_counts, out_file)
             with open(separated_representative_tokens, 'w') as out_file:
                 json.dump(representative_tokens, out_file)
-        if legacy.get('mode', None)==True:
             
-
 
     def _get_token_id(self, token, fail_on_none=False):
         token_id = self.token_to_id.get(token)
