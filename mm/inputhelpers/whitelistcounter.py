@@ -3,11 +3,12 @@ from stringprocessor import StringProcessor
 import os
 import os.path
 import mm.config
+import logging
 
 
 
 class WhiteListCounter():
-    def __init__(self,whitelist,out_config,input_directory,threads=1,name='whitelistcounter',in_encoding='UTF-8', encoding='UTF-8'):
+    def __init__(self,mode, whitelist,out_config,input_directory,threads=1,name='whitelistcounter',in_encoding='UTF-8', encoding='UTF-8'):
         self.sp = StringProcessor(in_encoding, encoding)
         self.out_config = out_config
         self.input_directory = input_directory
@@ -48,7 +49,9 @@ class WhiteListCounter():
                         word_id = self._get_token_id(word)
                         self._count_word(word_id, doc_id)
     def run(self):
+
         filenames = os.listdir(self.input_directory)
+        logging.debug('Processing %i files' % (len(filenames)))
         for filename in filenames:
             full_path = os.path.join(self.input_directory, filename)
             self.run_filename(full_path)
@@ -91,6 +94,7 @@ class WhiteListCounter():
                 json.dump(doc_counts, out_file)
             with open(separated_representative_tokens, 'w') as out_file:
                 json.dump(representative_tokens, out_file)
+        logging.debug('WhiteList Counter: Dump of data complete')
             
 
     def _get_token_id(self, token, fail_on_none=False):
