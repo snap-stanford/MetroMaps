@@ -7,7 +7,7 @@ Welcome to Metromaps, an innovative way of extracting story-lines from your chro
 #Configuration Specs
 ##Legacy Helper
 
-Config file contains few field `input_json_file:`, `doc_metadata`, `output_dir`, `num_clusters`
+Config file contains few field `input_json_file`, `doc_metadata`, `output_dir`, `num_clusters`
 
     * `global_tokens` (name -> id)
     * `global_counts` (id -> counts)

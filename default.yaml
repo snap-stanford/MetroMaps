@@ -15,15 +15,13 @@ input_helper:
             outfile_global_counts: domains/lotr/out/global_counts.json
             outfile_doc_counts: domains/lotr/out/mm_doc_counts.json
             outfile_representative_tokens: domains/lotr/out/representative_tokens.json
-        legacy: # remove this before the project is over
-            mode: on
-            outfile_global_tokens: domains/lotr/out/legacy/global_tokens.txt
-            outfile_representative_tokens: domains/lotr/out/legacy/representative_tokens.txt
-            outfile_doc_counts: domains/lotr/out/legacy/doc_counts.txt
-    
+
     #docs_metadata: domains/lotr/data/doc_meta.json
 
-
+legacy_helper:
+    input_json_file: domains/lotr/out/mm_input.json
+    doc_metadata: domains/lotr/data/doc_metadata.json
+    output_dir: domains/lotr/data/out/legacy/
 
 input:
     globals: domains/lotr/out/mm_input.json

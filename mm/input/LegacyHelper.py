@@ -1,6 +1,8 @@
 
 import math
 import json
+import os.path
+import os
 
 class LegacyHelper:
     def __init__(self, legacy_helper_config_dict):
@@ -15,7 +17,6 @@ class LegacyHelper:
                         token_max[token_id] = count
 
             return token_max, num_docs_with_term
-
 
 
         self.data = {}
@@ -41,22 +42,22 @@ class LegacyHelper:
         idf = math.log(float(self.num_docs)/float(num_docs_with_term[token_id]))
         return tf * idf
 
-    def write(self):
-        docs = sorted(self.doc_metadata, key= lambda x: int(x['timestamp']))
 
-        clusters = [[]] * self.num_clusters
-        ''' assign clusters to documents '''
-        for i, doc in enumerate(docs):
-            
-            clusters[i / self.num_clusters].append(doc)
-        
+
+
+    def write(self):
+        ''' Helper Functions for Writing '''
         def fakeDate(cluster_number, doc_number):
+            ''' TODO: handle this more nicely '''
             assert (cluster_number >= 0 and cluster_number < 12)
-            assert (doc_number >= 0 and doc_number < 30)
+            assert(doc_number >= 0)
+
+            if doc_number >= 30:
+                doc_number = 29
             return "%s%02i%02i" ("2013", cluster_number+1, doc_number+1)
 
-        def write_docs_in_cluster(docs_in_cluster, ostream, cluster_date):
-            for doc in docs_in_cluster:
+        def write_docs_in_cluster(self, docs_in_cluster, ostream, cluster_index):
+            for doc_i, doc in enumerate(docs_in_cluster):
                 
 
                 doc_id = doc['id']
@@ -73,17 +74,42 @@ class LegacyHelper:
                 tfidf_avg = float(tfidf_sum) / len(doc_data)
                 doc_tokens.sort(key=get(1),reverse=True)
 
-
                 ''' 1. write doc header
                     2. write doc tokens
                     3. write two new lines'''
                 ostream.write('%s\t%f\n' % (doc_id, tfidf_avg))
-                ostream.write('%s\t%s\t%s\t%s' % (doc_id, cluster_date, doc_link, doc_name))
+                ostream.write('%s\t%s\t%s\t%s' % (doc_id, self.fakeDate(cluster_index, doc_i), doc_link, doc_name))
 
                 for token in doc_tokens:
                     ostream.write('%s\t%s\n' % (token[0], token[1]))
             ostream.write('\n\n')
+        docs = sorted(self.doc_metadata, key= lambda x: int(x['timestamp']))
 
+        clusters = [[]] * self.num_clusters
+        ''' assign clusters to documents '''
+        for i, doc in enumerate(docs):
+            
+            clusters[i / self.num_clusters].append(doc)
+
+        for i, cluster in enumerate(clusters):
+            startDate = self.fakeDate(i, 0)
+            endDate = fakeDate(i, len(cluster) - 1)
+            ostream = open(os.path.join(self.output_dir, '%s-%s' % (startDate, endDate)),'w')
+            ostream.write('%\n%i\n%s%s\n\n' % (startDate, len(cluster), startDate, endDate))
+            self.write_docs_in_cluster(cluster, ostream, i)
+            ostream.close()
+
+
+            
+
+
+
+
+
+
+
+        
+        
 
 
 
