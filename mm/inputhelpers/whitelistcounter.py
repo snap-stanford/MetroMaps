@@ -4,6 +4,8 @@ import os
 import os.path
 import mm.config
 
+
+
 class WhiteListCounter():
     def __init__(self,whitelist,out_config,input_directory,threads=1,name='whitelistcounter',in_encoding='UTF-8', encoding='UTF-8'):
         self.sp = StringProcessor(in_encoding, encoding)
