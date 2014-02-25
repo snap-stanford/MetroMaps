@@ -7,10 +7,11 @@ Welcome to Metromaps, an innovative way of extracting story-lines from your chro
 #Configuration Specs
 ##Legacy Helper
 
-`input_json_file: filename with JSON fields:`
-    * `global_tokens` (id -> count)
-    * `doc_counts`
-    * 
+Config file contains few field `input_json_file:`, `doc_metadata`, `output_dir`, `num_clusters`
+
+    * `global_tokens` (name -> id)
+    * `global_counts` (id -> counts)
+    * `doc_counts` (docid -> [(token_id -> count), (token_id -> count))
 
 
 
@@ -19,8 +20,6 @@ self.global_tokens = self.data['global_tokens']
         self.doc_counts = self.data['doc_counts']
         self.num_clusters = self.data['num_clusters']
         self.doc_metadata = self.data['doc_metadata']
-        self.input_dir = self.data['input_dir']
-        self.output_dir = self.data['output_dir']
         self.max_token_counts, self.num_docs_with_term = token_stats(self.doc_counts)
         self.num_docs = len(doc_counts)
 

@@ -19,16 +19,14 @@ class LegacyHelper:
 
 
         self.data = {}
-        with open(legacy_helper_config_dict['input_json_file']) as in_json:
+        with open(legacy_helper_config_dict['input_json_file']) as in_json, open(legacy_helper_config_dict['doc_metadata']) as doc_meta_json:
             self.data = json.load(in_json)
-        
+            self.doc_metadata = json.load(doc_metadata)
         self.global_tokens = self.data['global_tokens']
         self.global_counts = self.data['global_counts']
         self.doc_counts = self.data['doc_counts']
-        self.num_clusters = self.data['num_clusters']
-        self.doc_metadata = self.data['doc_metadata']
-        self.input_dir = self.data['input_dir']
-        self.output_dir = self.data['output_dir']
+        self.num_clusters = int(legacy_helper_config_dict['num_clusters'])
+        self.output_dir = legacy_helper_config_dict['output_dir']
         self.max_token_counts, self.num_docs_with_term = token_stats(self.doc_counts)
         self.num_docs = len(doc_counts)
 
