@@ -21,10 +21,13 @@ def Run_input_handler(configs):
         logging.info("Skipping input handler")
 
 def Run_legacy_handler(configs):
-    logging.info("Converting to legacy format")
-    legacy_handler = mm.input.LegacyHelper(configs.get('legacy_helper'))
-    legacy_handler.write()
-    logging.info("Legacy format available in %s" %(configs.get('legacy_helper').get('output_dir')))
+    legacy_configs = configs.get('legacy_helper')
+    if (legacy_configs.get('mode')):
+        logging.info("Converting to legacy format")
+
+        legacy_handler = mm.input.LegacyHandler(legacy_configs)
+        legacy_handler.write()
+        logging.info("Legacy format available in %s" %(configs.get('legacy_helper').get('output_dir')))
 
 def Main(configs):
     Run_input_handler(configs)    

@@ -1,5 +1,5 @@
 input_helper:
-    mode: off
+    mode: on
     name: whitelistcounter
     encoding: UTF-8
     in_encoding: cp1252
@@ -20,12 +20,17 @@ input_helper:
     #docs_metadata: domains/lotr/data/doc_meta.json
 
 legacy_helper:
+    mode: on
     input_json_file: domains/lotr/out/mm_input.json
-    output_dir: domains/lotr/out/legacy/
+    output_dir: domains/lotr/out/legacy/query_result/
     doc_metadata: domains/lotr/data/doc_meta.json
     num_clusters: 10
 
 input:
     globals: domains/lotr/out/mm_input.json
     global_tokens: domains/lotr/out/global_tokens.json
+
+clustering:
+    input_dir: domains/lotr/out/legacy/query_result
+    temporary_dir: domains/lotr/out/legacy/temporary_dir
     
