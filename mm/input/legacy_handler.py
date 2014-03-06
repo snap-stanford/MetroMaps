@@ -110,6 +110,19 @@ class LegacyHandler:
             write_docs_in_cluster(cluster, ostream, i)
             ostream.close()
 
+        json_data = {}
+        clusters_data = []
+        for i,cluster in enumerate(clusters):
+            cluster_dict = {}
+            cluster_start_date = fakeDate(i,0)
+            cluster_end_date = fakeDate(i,len(cluster)-1)
+            document_json_data = []
+            for doc_i, doc_d in cluster:
+                doc_id = doc_d['id']
+                doc_entry = {'doc_metadata': doc_d}
+                doc_data = self.doc_counts.get(str(doc_id), None)
+                for token in doc_data:
+                    
 
             
 
