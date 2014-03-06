@@ -25,6 +25,7 @@ legacy_helper:
     output_dir: domains/lotr/out/legacy/query_result/
     doc_metadata: domains/lotr/data/doc_meta.json
     num_clusters: 10
+    output_json: domains/lotr/out/legacy_handler_out.json
 
 input:
     globals: domains/lotr/out/mm_input.json

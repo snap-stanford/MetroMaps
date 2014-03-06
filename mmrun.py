@@ -5,7 +5,7 @@ import mm.inputhelpers
 import mm.inputhelpers.factory
 import mm.input
 import logging
-import yaml
+import pyyaml
 
 
 
