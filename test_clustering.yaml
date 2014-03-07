@@ -1,0 +1,18 @@
+input_helper:
+    mode: off
+    #docs_metadata: domains/lotr/data/doc_meta.json
+
+legacy_helper:
+    mode: off
+
+
+scoring_helper:
+    mode: off
+
+
+clustering:
+    mode: on
+    input_json: domains/test/test_data_clustering.json
+    output_json: domains/test/test_out.json
+    graphing: on
+    out_graph_dir: domains/test/timeslice_graphs/

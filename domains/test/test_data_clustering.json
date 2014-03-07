@@ -1,0 +1,73 @@
+[{
+	"cluster_end_date": "20130230",
+    "cluster_start_date": "20130201",
+	"doc_data": [
+            {
+                "doc_metadata": {
+                    "id": "55",
+                    "name": "55.txt",
+                    "timestamp": "55"
+                },
+                "tokens": [
+                    {
+                        "id": "11",
+                        "plaintext": "Gandalf",
+                        "tfidf": 1.089861468254667,
+                        "token_doc_count": 6
+                    },
+                    {
+                        "id": "24",
+                        "plaintext": "Peregrin",
+                        "tfidf": 1.5845941303058504,
+                        "token_doc_count": 1
+                    },
+                    {
+                        "id": "21",
+                        "plaintext": "Gimli",
+                        "tfidf": 1.3875268396577456,
+                        "token_doc_count": 2
+                    }
+              	]
+            },
+            {
+               "doc_metadata": {
+                    "id": "1",
+                    "name": "1.txt",
+                    "timestamp": "1"
+                },
+                "tokens": [
+                    {
+                        "id": "1",
+                        "plaintext": "Bilbo",
+                        "tfidf": 4.033365187411595,
+                        "token_doc_count": 14
+                    },
+                    {
+                        "id": "3",
+                        "plaintext": "Frodo",
+                        "tfidf": 0.9744660008545832,
+                        "token_doc_count": 12
+                    },
+                    {
+                        "id": "2",
+                        "plaintext": "Baggins",
+                        "tfidf": 5.437770325270332,
+                        "token_doc_count": 9
+                    },
+                    {
+                        "id": "5",
+                        "plaintext": "Sam",
+                        "tfidf": 0.4063984400586366,
+                        "token_doc_count": 1
+                    },
+                    {
+                        "id": "4",
+                        "plaintext": "Gamgee",
+                        "tfidf": 2.552216271653552,
+                        "token_doc_count": 2
+                    }
+                ]
+            }
+    ]
+
+}]
