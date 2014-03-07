@@ -150,6 +150,7 @@ class LegacyHandler:
 
             cluster_dict['cluster_start_date'] = cluster_start_date
             cluster_dict['cluster_end_date'] = cluster_end_date
+            cluster_dict['index'] = i
             cluster_dict['doc_data'] = document_json_data
 
             clusters_data.append(cluster_dict)
