@@ -2,20 +2,18 @@
 # The config file is assumed to be on the project path
 
 import subprocess
+import logging
 
 class ClusterGenerator:
     def __init__(self, config):
-        self.input_dir = config['input_dir']
-        self.output_dir = config['temporary_dir']
-
+        self.input_JSON = config['input_json']
+        self.output_JSON = configs['output_json']
+        logging.debug('Cluster Generator inited')
 
 
 
     def run():
-        for timeslice_file in os.listdir(self.input_dir):
-            timeslice_file_full = os.path.join(self.input_dir, timeslice_file)
-            edgelist = os.path.join(self.output_dir, "%s_edgelist" % timeslice_file)
-            status = subprocess.call(['./legacy/CreateCoocurrenceGraph', timeslice_file_full, edgelist])
+    	logging.debug('Run called on Cluster Generator')
         
 
 

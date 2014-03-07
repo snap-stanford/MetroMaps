@@ -26,12 +26,14 @@ class LegacyHandler:
         self.global_tokens = self.data['global_tokens']
         self.global_counts = self.data['global_counts']
         self.doc_counts = self.data['doc_counts']
+        self.repr_tokens = self.data['representative_tokens']
         self.num_clusters = int(legacy_helper_config_dict['num_timeslices'])
         self.output_dir = legacy_helper_config_dict['output_dir']
         self.output_json = legacy_helper_config_dict['output_json']
         self.max_token_counts, self.num_docs_with_term = token_stats(self.doc_counts)
-        
+
         self.num_docs = len(self.doc_counts)
+        self.choose_representative_token = legacy_helper_config_dict.get('options', {}).get('choose_representative_token', False)
 
     def tfidf(self, token_id, doc_id):
         if self.num_docs_with_term.get(token_id, 1) <= 1:
@@ -135,7 +137,14 @@ class LegacyHandler:
                     token_score = self.tfidf(token, doc_id)
                     token_doc_count = count
                     token_id = token
-                    tokens.append({'id':token_id,'tfidf':token_score,'token_doc_count':count,})
+
+                    token_dict = {'id':token_id,'tfidf':token_score,'token_doc_count':count}
+                    tokens.append(token_dict)
+                    if self.choose_representative_token: 
+                        token_syns = self.repr_tokens[token_id]
+                        best_syn = max(token_syns, key=lambda x: token_syns[x])
+                        token_dict['plaintext'] = best_syn
+
                 doc_entry['tokens'] = tokens
                 document_json_data.append(doc_entry)
 
@@ -147,6 +156,7 @@ class LegacyHandler:
 
         with open(self.output_json,'w') as output_json:
             json.dump(clusters_data, output_json)   
+            logging.info('Scoring JSON info written to %s'%self.output_json)
 
 
 

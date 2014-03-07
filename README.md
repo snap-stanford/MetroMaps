@@ -14,16 +14,17 @@ Config file contains few fields, `mode` (on or off), `input_json_file`, `doc_met
     * `global_tokens` (name -> id)
     * `global_counts` (id -> counts)
     * `doc_counts` (docid -> [(token_id -> count), (token_id -> count))
+    * `representative_tokens` {id -> {synonym: count, synonym2:count }}
+
+Legacy Helper outputs JSON in the following format:
+
+     [{"cluster_end_date":'date', "cluster_start_date", "doc_data": [{"doc_metadata": "id", "name", "timestamp"}, "tokens": [{"id", "plaintext", "score", "token_doc_count"}]]
+
+##Clustering
 
 
 
-self.global_tokens = self.data['global_tokens']
-        self.global_counts = self.data['global_counts']
-        self.doc_counts = self.data['doc_counts']
-        self.num_clusters = self.data['num_clusters']
-        self.doc_metadata = self.data['doc_metadata']
-        self.max_token_counts, self.num_docs_with_term = token_stats(self.doc_counts)
-        self.num_docs = len(doc_counts)
+
 
 #Input Data
 
@@ -39,4 +40,4 @@ The input to Metromaps consists of several parts:
 
 The above fields are read (if available) from one file called "master_input.json" with the key of json data defined as above, but with spaces replaced by underscores ("global_tokens", "global_counts") and then replaced by any individual json files. 
 
-# Output
+# 

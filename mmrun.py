@@ -4,6 +4,7 @@ import argparse
 import mm.inputhelpers
 import mm.inputhelpers.factory
 import mm.input
+import mm.mapgen
 import logging
 import yaml
 
@@ -33,13 +34,14 @@ def Run_legacy_handler(configs):
 
         legacy_handler = mm.input.LegacyHandler(legacy_configs)
         legacy_handler.write()
-        logging.info("Legacy format available in %s" %(configs.get('legacy_helper').get('output_dir')))
+        logging.info("Legacy format written to %s" %(configs.get('legacy_helper').get('output_dir')))
 
 def Run_clustering_handler(configs):
     clustering_configs = configs.get('clustering',{})
     if (clustering_configs.get('mode')):
         logging.info("Running clustering handler")
-
+        clustering_handler = mm.mapgen.ClusterGenerator(configs.get('clustering'))
+        clustering_handler.run()
 
 
 
