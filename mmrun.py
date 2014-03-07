@@ -40,7 +40,7 @@ def Run_clustering_handler(configs):
     clustering_configs = configs.get('clustering',{})
     if (clustering_configs.get('mode')):
         logging.info("Running clustering handler")
-        clustering_handler = mm.mapgen.ClusterGenerator(configs.get('clustering'))
+        clustering_handler = mm.mapgen.cluster_generator.ClusterGenerator(configs.get('clustering'))
         clustering_handler.run()
 
 

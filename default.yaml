@@ -25,7 +25,7 @@ legacy_helper:
     input_json_file: domains/lotr/out/mm_input.json
     output_dir: domains/lotr/out/legacy/query_result/
     doc_metadata: domains/lotr/data/doc_meta.json
-    num_timeslices: 10
+    num_timeslices: 20
     output_json: &score_JSON domains/lotr/out/legacy_handler_out.json
     options:
         choose_representative_token: on
@@ -43,3 +43,5 @@ clustering:
     mode: on
     input_json: *score_JSON 
     output_json: &clusters_JSON 
+    graphing: on
+    out_graph_dir: domains/lotr/out/timeslice_graphs/

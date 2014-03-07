@@ -51,7 +51,8 @@ class LegacyHandler:
         ''' Helper Functions for Writing '''
         def fakeDate(cluster_number, doc_number, time=False):
             ''' TODO: handle this more nicely '''
-            assert (cluster_number >= 0 and cluster_number < 12)
+            if not (cluster_number >= 0 and cluster_number < 12):
+                cluster_number = 12 # temporary hack!
             assert(doc_number >= 0)
 
             if doc_number >= 30:
