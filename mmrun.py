@@ -5,7 +5,7 @@ import mm.inputhelpers
 import mm.inputhelpers.factory
 import mm.input
 import logging
-import pyyaml
+import yaml
 
 
 
@@ -20,6 +20,12 @@ def Run_input_handler(configs):
     else:
         logging.info("Skipping input handler")
 
+def Run_scoring_handler(configs):
+    scoring_handler_configs = configs.get('scoring_handler',{})
+    if (scoring_handler.get('mode')):
+        logging.info("Running scoring function (getting tfidf)")
+        scoring_handler = mm.input.ScoringHandler(scoring_handler_configs)
+
 def Run_legacy_handler(configs):
     legacy_configs = configs.get('legacy_helper')
     if (legacy_configs.get('mode')):
@@ -29,9 +35,18 @@ def Run_legacy_handler(configs):
         legacy_handler.write()
         logging.info("Legacy format available in %s" %(configs.get('legacy_helper').get('output_dir')))
 
+def Run_clustering_handler(configs):
+    clustering_configs = configs.get('clustering',{})
+    if (clustering_configs.get('mode')):
+        logging.info("Running clustering handler")
+
+
+
+
 def Main(configs):
     Run_input_handler(configs)    
     Run_legacy_handler(configs)
+    Run_clustering_handler(configs)
     # Run_clustering_handler(configs)
 
 

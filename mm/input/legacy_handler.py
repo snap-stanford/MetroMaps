@@ -26,7 +26,7 @@ class LegacyHandler:
         self.global_tokens = self.data['global_tokens']
         self.global_counts = self.data['global_counts']
         self.doc_counts = self.data['doc_counts']
-        self.num_clusters = int(legacy_helper_config_dict['num_clusters'])
+        self.num_clusters = int(legacy_helper_config_dict['num_timeslices'])
         self.output_dir = legacy_helper_config_dict['output_dir']
         self.output_json = legacy_helper_config_dict['output_json']
         self.max_token_counts, self.num_docs_with_term = token_stats(self.doc_counts)
@@ -138,7 +138,8 @@ class LegacyHandler:
 
             clusters_data.append(cluster_dict)
 
-        return cluster_data
+        with open(self.output_json,'w') as output_json:
+            json.dump(clusters_data, output_json)
 
 
 

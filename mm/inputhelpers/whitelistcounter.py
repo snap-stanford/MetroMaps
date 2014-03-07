@@ -2,7 +2,6 @@ import json
 from stringprocessor import StringProcessor
 import os
 import os.path
-import mm.config
 import logging
 
 
