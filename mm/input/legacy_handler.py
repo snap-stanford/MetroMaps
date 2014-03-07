@@ -30,6 +30,7 @@ class LegacyHandler:
         self.output_dir = legacy_helper_config_dict['output_dir']
         self.output_json = legacy_helper_config_dict['output_json']
         self.max_token_counts, self.num_docs_with_term = token_stats(self.doc_counts)
+        
         self.num_docs = len(self.doc_counts)
 
     def tfidf(self, token_id, doc_id):
@@ -121,15 +122,22 @@ class LegacyHandler:
             for doc_i, doc_d in enumerate(cluster):
                 doc_id = doc_d['id']
                 doc_entry = {'doc_metadata': doc_d}
-                doc_data = self.doc_counts.get(str(doc_id), None)
+                try:
+                    doc_data = self.doc_counts[str(doc_id)]
+                except KeyError:
+                    print doc_d
+                    print self.doc_counts
+                    print 'Error with key %s' % str(doc_id)
+
+
                 tokens = []
                 for token,count in doc_data.iteritems():
                     token_score = self.tfidf(token, doc_id)
                     token_doc_count = count
                     token_id = token
-                    tokens.append({'id':token_id,'tfidf':token_score,'token_doc_count':count})
+                    tokens.append({'id':token_id,'tfidf':token_score,'token_doc_count':count,})
                 doc_entry['tokens'] = tokens
-                document_json_data.append('doc_entry')
+                document_json_data.append(doc_entry)
 
             cluster_dict['cluster_start_date'] = cluster_start_date
             cluster_dict['cluster_end_date'] = cluster_end_date
@@ -138,7 +146,7 @@ class LegacyHandler:
             clusters_data.append(cluster_dict)
 
         with open(self.output_json,'w') as output_json:
-            json.dump(clusters_data, output_json)
+            json.dump(clusters_data, output_json)   
 
 
 

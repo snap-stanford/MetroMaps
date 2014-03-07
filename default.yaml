@@ -11,7 +11,7 @@ input_helper:
             mode: on
             outfile: domains/lotr/out/mm_input.json
         separated: # divides the three main input components into three files. see below
-            mode: off
+            mode: on
             outfile_global_tokens: domains/lotr/out/global_tokens.json # stem_to_id, id_to_repr_token
             outfile_global_counts: domains/lotr/out/global_counts.json
             outfile_doc_counts: domains/lotr/out/mm_doc_counts.json

@@ -15,7 +15,9 @@ class WhiteListCounter():
         self.docname_to_id = {}
         self.total_counts = {}
         self.doc_counts = {}
+        self.plainword_counts = {}
         self.whitelist = self._read_whitelist(whitelist)
+        self.synonyms = {} # id to {word: count}
         self._next_token_id = 1
         self._next_doc_id = 1
 
@@ -28,7 +30,7 @@ class WhiteListCounter():
         return set(l)
 
 
-    def _count_word(self, word_id, doc_id=None):
+    def _count_word(self, word_id,  doc_id=None, word_plain=None,):
         current_count = self.total_counts.get(word_id, 0)
         self.total_counts[word_id] = current_count + 1
         if doc_id:
@@ -36,17 +38,27 @@ class WhiteListCounter():
             current_word_in_doc = current_doc_counts.get(word_id, 0)
             current_doc_counts[word_id] = current_word_in_doc + 1
             self.doc_counts[doc_id] = current_doc_counts
+        if word_plain:
+            synonym_counts = self.synonyms.get(word_id,{})
+            current_count_count = synonym_counts.get(word_plain,0)
+            synonym_counts[word_plain] = current_count_count + 1
+            self.synonyms[word_id] = synonym_counts
+            
+            
+
+
 
     def run_filename(self, filename):
         with open(filename) as fi:
             doc_id = self._get_doc_id(filename)
             for line in fi:
                 line = line.strip()
-                for word in line.split():
-                    word = self.sp.clean(word)
+                for dirty_word in line.split():
+                    
+                    word = self.sp.clean(dirty_word)
                     if word in self.whitelist:
                         word_id = self._get_token_id(word)
-                        self._count_word(word_id, doc_id)
+                        self._count_word(word_id, doc_id, dirty_word)
     def run(self):
 
         filenames = os.listdir(self.input_directory)
@@ -57,6 +69,8 @@ class WhiteListCounter():
 
     def _get_representative_tokens(self):
         # reverse token_to_id with the counts from global counts
+
+
         return {v: k for k,v in self.token_to_id.items()}
     
     def save(self):
@@ -64,20 +78,17 @@ class WhiteListCounter():
         separated = self.out_config.get("separated", {})
         legacy = self.out_config.get("legacy", {})
         
-        global_tokens = self.token_to_id
-        global_counts = self.total_counts
-        representative_tokens = self._get_representative_tokens()
-        doc_counts = self.doc_counts
+        
 
         if together.get('mode',None)==True:
            # return all of the data into one big dictionary
             together_out = together["outfile"]
             with open(together_out,'w') as out_file:
                 d={}
-                d['global_tokens'] = global_tokens
-                d['global_counts'] = global_counts
-                d['representative_tokens'] = representative_tokens
-                d['doc_counts'] = doc_counts
+                d['global_tokens'] = self.token_to_id
+                d['global_counts'] = self.total_counts
+                d['representative_tokens'] = self.synonyms
+                d['doc_counts'] = self.doc_counts
                 json.dump(d, out_file)
         if separated.get('mode', None)==True:
             separated_tokens_out = separated['outfile_global_tokens']
@@ -86,13 +97,13 @@ class WhiteListCounter():
             separated_representative_tokens = separated['outfile_representative_tokens']
 
             with open(separated_tokens_out,'w') as out_file:
-                json.dump(global_tokens, out_file)
+                json.dump(self.token_to_id, out_file)
             with open(separated_global_counts_out,'w') as out_file:
-                json.dump(global_counts, out_file)
+                json.dump(self.total_counts, out_file)
             with open(separated_doc_counts,'w') as out_file:
-                json.dump(doc_counts, out_file)
+                json.dump(self.doc_counts, out_file)
             with open(separated_representative_tokens, 'w') as out_file:
-                json.dump(representative_tokens, out_file)
+                json.dump(self.synonyms, out_file)
         logging.debug('WhiteList Counter: Dump of data complete')
             
 
@@ -104,14 +115,7 @@ class WhiteListCounter():
             self._next_token_id += 1
         return token_id
 
-    def _count_word(self, word_id, doc_id=None):
-        current_count = self.total_counts.get(word_id, 0)
-        self.total_counts[word_id] = current_count + 1
-        if doc_id:
-            current_doc_counts = self.doc_counts.get(doc_id, {})
-            current_word_in_doc = current_doc_counts.get(word_id, 0)
-            current_doc_counts[word_id] = current_word_in_doc + 1
-            self.doc_counts[doc_id] = current_doc_counts
+    
 
     def _get_doc_id(self, doc, fail_on_none=False):
         doc_id = self.docname_to_id.get(doc)
