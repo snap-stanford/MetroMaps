@@ -3,17 +3,21 @@
 
 import subprocess
 import logging
+import json
 
 class ClusterGenerator:
     def __init__(self, config):
         self.input_JSON = config['input_json']
-        self.output_JSON = configs['output_json']
-        logging.debug('Cluster Generator inited')
+        self.output_JSON = config['output_json']
+        with open(self.input_JSON) as f_in:
+	        self.clusters = json.load(f_in)
+	        logging.debug('ClusterGenerator loaded %i timeslices' % len(self.clusters))
 
 
 
-    def run():
-    	logging.debug('Run called on Cluster Generator')
+    def run(self):
+    	logging.debug('Cluster Generator: run begin')
+    	
         
 
 

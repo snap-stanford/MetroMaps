@@ -41,5 +41,5 @@ scoring_helper:
 
 clustering:
     mode: on
-    input_json = *score_JSON 
-    output_json = &clusters_JSON 
+    input_json: *score_JSON 
+    output_json: &clusters_JSON 
