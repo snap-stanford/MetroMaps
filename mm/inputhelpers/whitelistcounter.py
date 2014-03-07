@@ -16,8 +16,8 @@ class WhiteListCounter():
         self.total_counts = {}
         self.doc_counts = {}
         self.whitelist = self._read_whitelist(whitelist)
-        self._next_token_id = 0
-        self._next_doc_id = 0
+        self._next_token_id = 1
+        self._next_doc_id = 1
 
 
     def _read_whitelist(self, whitelist_filename):

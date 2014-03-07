@@ -1,5 +1,5 @@
 input_helper:
-    mode: off
+    mode: on
     name: whitelistcounter
     encoding: UTF-8
     in_encoding: cp1252
