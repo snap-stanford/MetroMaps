@@ -4,6 +4,7 @@ import json
 import os.path
 import os
 import logging
+from itertools import combinations
 
 class LegacyHandler:
     def __init__(self, legacy_helper_config_dict):
@@ -46,7 +47,10 @@ class LegacyHandler:
         idf = math.log(float(self.num_docs)/float(self.num_docs_with_term[str(token_id)]))
         return tf * idf
 
-
+    
+    
+ 
+    
     def write(self):
         ''' Helper Functions for Writing '''
         def fakeDate(cluster_number, doc_number, time=False):

@@ -19,4 +19,5 @@ for i,f in enumerate(all_files):
     f = {'id': str(i+1), 'name': f, 'timestamp': f.split('.')[0]}
     doc_list.append(f)
 
-json.dump(doc_list, open(sys.argv[1],'w'))    
+json.dump(doc_list, open(sys.argv[1],'w'))
+

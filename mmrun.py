@@ -42,6 +42,7 @@ def Run_clustering_handler(configs):
         logging.info("Running clustering handler")
         clustering_handler = mm.mapgen.cluster_generator.ClusterGenerator(configs.get('clustering'))
         clustering_handler.run()
+        clustering_handler.write()
 
 
 
@@ -63,5 +64,6 @@ if __name__=='__main__':
     config_dict = {}
     with open(args.config_file) as cf:
         config_dict = yaml.load(cf)
+        
     Main(config_dict)
     

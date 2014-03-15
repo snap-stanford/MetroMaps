@@ -6,6 +6,7 @@ import logging
 import json
 import networkx as nx
 import os.path
+from itertools import combinations
 
 
 class ClusterGenerator(object):
@@ -14,9 +15,23 @@ class ClusterGenerator(object):
         self.output_JSON = config['output_json']
         self.graphing_on = config.get('graphing', False)
         self.graphing_out = config.get('out_graph_dir')
+        self.similarity_merge = float(config.get('similarity_merge'))
+        self.out_legacy_dir = config.get('out_legacy_dir')
         with open(self.input_JSON) as f_in:
             self.timeslices = json.load(f_in)
             logging.debug(str(self))
+
+    def get_percolated_cliques(self, G, k):
+        perc_graph = nx.Graph()
+        cliques = list(frozenset(c) for c in nx.find_cliques(G) if len(c) >= k)
+        perc_graph.add_nodes_from(cliques)
+        
+        for c1, c2 in combinations(cliques, 2):
+            if len(c1.intersection(c2)) >= (k - 1):
+                perc_graph.add_edge(c1, c2)
+        return perc_graph
+        # for component in nx.connected_components(perc_graph):
+        #     yield(frozenset.union(*component))
 
     def draw_graph(self,graph,file_name):
         #initialze Figure
@@ -47,8 +62,9 @@ class ClusterGenerator(object):
         else:
             raise Error("Configuration does not allow graphing")
 
-    def graph_JSON(self):
-        pass
+    
+
+    
 
     def ccg(self, timeslice_dict):
         g = nx.Graph()
@@ -57,7 +73,6 @@ class ClusterGenerator(object):
         for doc in doc_data:
 
             token_ids = [t['id'] for t in doc["tokens"]]
-            logging.debug('adding path %s to the graph' % str(token_ids))
             g.add_path(token_ids)
             for t in doc["tokens"]:
                 g.node[t['id']] = t['plaintext']
@@ -73,11 +88,73 @@ class ClusterGenerator(object):
     def __repr__(self):
         return "ClusterGenerator: %s timeslices" % len(self.timeslices)
 
+    @staticmethod
+    def _merge_one_cluster(from_cluster, into_cluster):
+        for word in from_cluster:
+            into_cluster.add(word)
+        return into_cluster
+
+    def _merge_clusters(self, clusters):
+        clusters.sort(key=lambda cluster: len(cluster['cluster_tokens']))
+        for i in range(len(clusters)):
+            for j in range(len(clusters)):
+                current_cluster = clusters[i]
+                potential_parent = clusters[j]
+                if ((len(current_cluster & potential_parent)/float(len(current_cluster))) > self.similarity_merge):
+                    clusters[j] = _merge_once_cluster(current_cluster, potential_parent)
+                    clusters[i] = None
+        return [cluster for cluster in clusters if cluster]
+
+
+
     def run(self):
         logging.debug('Cluster Generator: run begin')
+        self.timeslice_clusters = {}
         for i in range(self.num_timeslices):
             g = self.ccg(self.timeslices[i])
-            logging.debug(g.edges())
-            logging.debug(g.nodes(data=True))
             if self.graphing_on:
-                self.draw_graph(g,os.path.join(self.graphing_out, ("graph_timeslice_%s.pdf" % str(i))))
+                out_file = os.path.join(self.graphing_out, ("graph_timeslice_%s.pdf" % str(i)))
+                self.draw_graph(g,out_file)
+                logging.debug('Graph written to %s' % out_file)
+
+            clusters = []
+            logging.debug("Running clique percolation");
+            for k in range(max(g.degree_iter(), key=lambda x: x[1])[1]):
+                for community in nx.k_clique_communities(g,k+2):
+                    cluster_k = []
+                    for node in community:
+                        n_dict = {'plain': g.node[node], 'id': node}
+                        cluster_k += [n_dict]
+
+                    cluster_d = {'cluster_tokens': cluster_k, 'k': k+2}
+                    clusters += [cluster_d]
+
+            self.timeslice_clusters[i] = self._merge_clusters(clusters)
+        logging.debug('Clusters for all timeslices')
+
+
+    def write(self):
+        if not self.timeslice_clusters:
+            logging.error('Run has not been run yet or there are no timeslices available')
+        else:
+            with open(self.output_JSON, 'w') as outjson:
+                json.dump(self.timeslice_clusters, outjson)
+
+            if self.out_legacy_dir: 
+                for i in range(len(self.timeslices)):
+                    timeslice_start_date = self.timeslices[i]['cluster_start_date']
+                    timeslice_end_date = self.timeslices[i]['cluster_end_date']
+                    filename = 'clusters_%s_%s' % (timeslice_start_date, timeslice_end_date)
+                    with open(os.path.join(self.out_legacy_dir, filename), 'w') as legacy_out_cluster:
+                        for cluster in self.timeslice_clusters[i]:
+                            tokens = cluster['cluster_tokens']
+                            tokens_joined = ', '.join(tokens)
+                            num_tokens = len(token)
+                            text = 'Cluster: %i %s\n' % (num_tokens, tokens_joined)
+                            legacy_out_cluster.write(text)
+                    
+
+
+        logging.info('Clusters written to %s' % self.output_JSON)
+
+

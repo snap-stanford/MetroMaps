@@ -42,6 +42,10 @@ scoring_helper:
 clustering:
     mode: on
     input_json: *score_JSON 
-    output_json: &clusters_JSON 
-    graphing: on
+    similarity_merge: 0.7 # intersection / child size above this limit merges
+    output_json: &clusters_JSON domains/lotr/out/clusters.json
+    graphing: off
     out_graph_dir: domains/lotr/out/timeslice_graphs/
+    # Remove the following when cleaning project
+    out_legacy_directory: domains/lotr/out/clusters/
+
