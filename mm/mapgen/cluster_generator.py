@@ -91,17 +91,24 @@ class ClusterGenerator(object):
     @staticmethod
     def _merge_one_cluster(from_cluster, into_cluster):
         for word in from_cluster:
-            into_cluster.add(word)
+            into_cluster.append(word)
         return into_cluster
 
     def _merge_clusters(self, clusters):
         clusters.sort(key=lambda cluster: len(cluster['cluster_tokens']))
         for i in range(len(clusters)):
-            for j in range(len(clusters)):
-                current_cluster = clusters[i]
-                potential_parent = clusters[j]
-                if ((len(current_cluster & potential_parent)/float(len(current_cluster))) > self.similarity_merge):
-                    clusters[j] = _merge_once_cluster(current_cluster, potential_parent)
+            current_cluster_item = clusters[i]
+            if not current_cluster_item:
+                continue
+            current_cluster = current_cluster_item.get('cluster_tokens')
+            # fix this to be merging dictionaries, not just lists
+            for j in range(i+1, len(clusters)):
+                potential_parent_item = clusters[j]
+                if not potential_parent_item:
+                    continue
+                potential_parent = potential_parent_item.get('cluster_tokens')
+                if ((len(set(current_cluster) & set(potential_parent))/float(len(current_cluster))) > self.similarity_merge):
+                    clusters[j]['cluster_tokens'] = ClusterGenerator._merge_one_cluster(current_cluster, potential_parent)
                     clusters[i] = None
         return [cluster for cluster in clusters if cluster]
 
@@ -118,13 +125,13 @@ class ClusterGenerator(object):
                 logging.debug('Graph written to %s' % out_file)
 
             clusters = []
-            logging.debug("Running clique percolation");
             for k in range(max(g.degree_iter(), key=lambda x: x[1])[1]):
                 for community in nx.k_clique_communities(g,k+2):
                     cluster_k = []
                     for node in community:
-                        n_dict = {'plain': g.node[node], 'id': node}
-                        cluster_k += [n_dict]
+                        #n_dict = {'plain': g.node[node], 'id': node}
+                        token = g.node[node]
+                        cluster_k += [token]
 
                     cluster_d = {'cluster_tokens': cluster_k, 'k': k+2}
                     clusters += [cluster_d]
@@ -149,12 +156,12 @@ class ClusterGenerator(object):
                         for cluster in self.timeslice_clusters[i]:
                             tokens = cluster['cluster_tokens']
                             tokens_joined = ', '.join(tokens)
-                            num_tokens = len(token)
+                            num_tokens = len(tokens)
                             text = 'Cluster: %i %s\n' % (num_tokens, tokens_joined)
                             legacy_out_cluster.write(text)
-                    
+
+
 
 
         logging.info('Clusters written to %s' % self.output_JSON)
-
-
+        logging.info('Legacy clusters written to %s' % self.out_legacy_dir)

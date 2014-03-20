@@ -44,13 +44,21 @@ def Run_clustering_handler(configs):
         clustering_handler.run()
         clustering_handler.write()
 
-
+def Run_map_generator(configs):
+    map_gen_configs = configs.get('mapgen')
+    if (map_gen_configs.get('mode')):
+        logging.info("Running map generation")
+        mapgen_handler = mm.mapgen.legacy_generator.LegacyGenerator(map_gen_configs)
+        mapgen_handler.run()
+    else:
+        logging.info('Skipping map generator')
 
 def Main(configs):
     Run_input_handler(configs)    
     Run_legacy_handler(configs)
     Run_clustering_handler(configs)
     # Run_clustering_handler(configs)
+    Run_map_generator(configs)
 
 
 
@@ -64,6 +72,5 @@ if __name__=='__main__':
     config_dict = {}
     with open(args.config_file) as cf:
         config_dict = yaml.load(cf)
-        
     Main(config_dict)
     

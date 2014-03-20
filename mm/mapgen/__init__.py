@@ -1,1 +1,2 @@
 from .cluster_generator import ClusterGenerator
+from .legacy_generator import LegacyGenerator
