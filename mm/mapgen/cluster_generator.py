@@ -17,6 +17,9 @@ class ClusterGenerator(object):
         self.graphing_out = config.get('out_graph_dir')
         self.similarity_merge = float(config.get('similarity_merge'))
         self.out_legacy_dir = config.get('out_legacy_dir')
+        if not os.path.exists(self.out_legacy_dir):
+            logging.info('Created directory %s' % self.out_legacy_dir)
+            os.makedirs(self.out_legacy_dir)
         with open(self.input_JSON) as f_in:
             self.timeslices = json.load(f_in)
             logging.debug(str(self))

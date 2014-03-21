@@ -7,16 +7,17 @@ import logging
 
 
 class WhiteListCounter():
-    def __init__(self,mode, whitelist,out_config,input_directory,threads=1,name='whitelistcounter',in_encoding='UTF-8', encoding='UTF-8'):
-        self.sp = StringProcessor(in_encoding, encoding)
-        self.out_config = out_config
-        self.input_directory = input_directory
+    
+    def __init__(self,config):
+        # all of the fields in the config file become instance variables
+        self.__dict__.update(config)
+        self.sp = StringProcessor(self.in_encoding, self.encoding)
         self.token_to_id = {}
         self.docname_to_id = {}
         self.total_counts = {}
         self.doc_counts = {}
         self.plainword_counts = {}
-        self.whitelist = self._read_whitelist(whitelist)
+        self.whitelist = self._read_whitelist(self.whitelist)
         self.synonyms = {} # id to {word: count}
         self._next_token_id = 1
         self._next_doc_id = 1
@@ -74,36 +75,32 @@ class WhiteListCounter():
         return {v: k for k,v in self.token_to_id.items()}
     
     def save(self):
-        together = self.out_config.get("together", {})
-        separated = self.out_config.get("separated", {})
-        legacy = self.out_config.get("legacy", {})
         
         
 
-        if together.get('mode',None)==True:
-           # return all of the data into one big dictionary
-            together_out = together["outfile"]
-            with open(together_out,'w') as out_file:
-                d={}
-                d['global_tokens'] = self.token_to_id
-                d['global_counts'] = self.total_counts
-                d['representative_tokens'] = self.synonyms
-                d['doc_counts'] = self.doc_counts
-                json.dump(d, out_file)
-        if separated.get('mode', None)==True:
-            separated_tokens_out = separated['outfile_global_tokens']
-            separated_global_counts_out = separated['outfile_global_counts']
-            separated_doc_counts = separated['outfile_doc_counts']
-            separated_representative_tokens = separated['outfile_representative_tokens']
+       
+        together_out = self.outfile
+        with open(together_out,'w') as out_file:
+            d={}
+            d['global_tokens'] = self.token_to_id
+            d['global_counts'] = self.total_counts
+            d['representative_tokens'] = self.synonyms
+            d['doc_counts'] = self.doc_counts
+            json.dump(d, out_file)
+        # if separated.get('mode', None)==True:
+        #     separated_tokens_out = separated['outfile_global_tokens']
+        #     separated_global_counts_out = separated['outfile_global_counts']
+        #     separated_doc_counts = separated['outfile_doc_counts']
+        #     separated_representative_tokens = separated['outfile_representative_tokens']
 
-            with open(separated_tokens_out,'w') as out_file:
-                json.dump(self.token_to_id, out_file)
-            with open(separated_global_counts_out,'w') as out_file:
-                json.dump(self.total_counts, out_file)
-            with open(separated_doc_counts,'w') as out_file:
-                json.dump(self.doc_counts, out_file)
-            with open(separated_representative_tokens, 'w') as out_file:
-                json.dump(self.synonyms, out_file)
+        #     with open(separated_tokens_out,'w') as out_file:
+        #         json.dump(self.token_to_id, out_file)
+        #     with open(separated_global_counts_out,'w') as out_file:
+        #         json.dump(self.total_counts, out_file)
+        #     with open(separated_doc_counts,'w') as out_file:
+        #         json.dump(self.doc_counts, out_file)
+        #     with open(separated_representative_tokens, 'w') as out_file:
+        #         json.dump(self.synonyms, out_file)
         logging.debug('WhiteList Counter: Dump of data complete')
             
 
@@ -151,4 +148,4 @@ class WhiteListCounter():
             self.run_filename(full_path)
    ''' 
 def construct(config):
-    return WhiteListCounter(**config)
+    return WhiteListCounter(config)

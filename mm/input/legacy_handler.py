@@ -30,11 +30,13 @@ class LegacyHandler:
         self.repr_tokens = self.data['representative_tokens']
         self.num_clusters = int(legacy_helper_config_dict['num_timeslices'])
         self.output_dir = legacy_helper_config_dict['output_dir']
+        if not os.path.exists(self.output_dir):
+            os.makedirs(self.output_dir)
         self.output_json = legacy_helper_config_dict['output_json']
         self.max_token_counts, self.num_docs_with_term = token_stats(self.doc_counts)
 
         self.num_docs = len(self.doc_counts)
-        self.choose_representative_token = legacy_helper_config_dict.get('options', {}).get('choose_representative_token', False)
+        self.choose_representative_token = legacy_helper_config_dict.get('choose_representative_token', False)
 
     def tfidf(self, token_id, doc_id):
         if self.num_docs_with_term.get(token_id, 1) <= 1:
@@ -114,6 +116,8 @@ class LegacyHandler:
         for i, cluster in enumerate(clusters):
             startDate = fakeDate(i, 0)
             endDate = fakeDate(i, len(cluster) - 1)
+            
+
             ostream = open(os.path.join(self.output_dir, '%s-%s' % (startDate, endDate)),'w')
             ostream.write('%s\n%i\n%s %s\n\n' % (startDate, len(cluster), startDate, endDate))
             write_docs_in_cluster(cluster, ostream, i)

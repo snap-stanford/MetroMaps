@@ -10,37 +10,35 @@ Welcome to Metromaps, an innovative way of extracting story-lines from your chro
 # Install
 Metromaps is fueled by Python 2.7. If you are running on MAC OS X, make sure you have the [brew version] of Python. 
 
-You will need [networkx], soon to be migrated to [SNAP] in 1.0.0(stay tuned). You might also want to get [nltk] but it's not required for basic functionality.	
+You will need [networkx], soon to be migrated to [SNAP] in 1.0.0(stay tuned). You might also want to get [nltk] but it's not required for basic functionality. 
 
 Once you have these packages, just clone this github repository! Write to us if you have any problems.
+
 
 [networkx]: http://networkx.github.io/
 [SNAP]: http://snap.stanford.edu/snap/index.html
 [nltk]: http://www.nltk.org/
 [brew version]: http://docs.python-guide.org/en/latest/starting/install/osx/
 
-#Configuration Specs
+#Handling Input
 
-##Legacy Helper
+MM is customized by specifying a configuration file at input. The fields that can be edited are in `mm/default.yaml`.
 
-Config file contains few fields, `mode` (on or off), `input_json_file`, `doc_metadata`, `output_dir`, `num_clusters`. 
+#Writing your own `input_handler:`
+Make sure that your input handler returns the following fields:
 
-`input_json_file` should contain:
+    * 'doc_counts' (docid -> [(token_id -> count), (token_id -> count))
+    * 'global_counts' (token_id -> global_count)
+    * 'global_tokens' (word -> token_id) # good idea to use the same id for words with the same stem
+    * 'representative_tokens' (token_id -> {'plaintext': count}) # the dictionary may contain several plainwords with respective counts. 
 
-    * `global_tokens` (name -> id)
-    * `global_counts` (id -> counts)
-    * `doc_counts` (docid -> [(token_id -> count), (token_id -> count))
-    * `representative_tokens` {id -> {synonym: count, synonym2:count }}
-
-Legacy Helper outputs JSON in the following format:
-
-     [{"cluster_end_date":'date', "cluster_start_date", "doc_data": [{"doc_metadata": "id", "name", "timestamp"}, "tokens": [{"id", "plaintext", "score", "token_doc_count"}]]
-
-
-##Clustering
-
-
-
+Additionally you must create a `doc_metadata.json` file that is a list of dictionaries with the following fields:
+	[{
+        "id": "1",
+        "name": "1.txt",
+        "timestamp": "1"
+    },...]
+Specify this file in `legacy helper:` under the key `doc_metadata` (see default.yaml for an example)
 
 
 #Input Data
