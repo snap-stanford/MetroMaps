@@ -1,0 +1,40 @@
+input_helper:
+    mode: on
+    name: whitelistcounter
+    encoding: UTF-8
+    in_encoding: cp1252
+    whitelist: specify_your_whitelist_file_here # FILL OUT example: domains/lotr/data/whitelist.txt (new-line separated)
+    input_directory: split_input_files_here # FILL OUT example: domains/lotr/data/rawtext
+    outfile: &input_out /tmp/mm_input.json
+        
+
+    #docs_metadata: domains/lotr/data/doc_meta.json
+
+legacy_helper:
+    mode: on
+    input_json_file: *input_out #your_output_from_above FILL OUT HERE
+    output_dir: /tmp/query_result 
+    doc_metadata: specify_doc_metadata_here ## FILL OUT
+    num_timeslices: 20
+    output_json: &score_JSON /tmp/legacy_handler_out.json
+    choose_representative_token: on
+    
+
+clustering:
+    mode: on
+    input_json: *score_JSON 
+    similarity_merge: 1 # <intersection> / <small size> above this limit merges
+    output_json: &clusters_JSON /tmp/clusters.json
+    graphing: off
+    out_graph_dir: /tmp/timeslice_graphs/
+    # Remove the following when cleaning project
+    out_legacy_dir: /tmp/clusters/clusters
+
+mapgen:
+    mode: on
+    cluster_dir: /tmp/clusters
+    raw_lines: /tmp/raw_lines
+    line_descriptions: /tmp/line_descriptions
+    chosen_lines: final_map.mm
+    
+    
