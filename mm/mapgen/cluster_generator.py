@@ -24,17 +24,7 @@ class ClusterGenerator(object):
             self.timeslices = json.load(f_in)
             logging.debug(str(self))
 
-    def get_percolated_cliques(self, G, k):
-        perc_graph = nx.Graph()
-        cliques = list(frozenset(c) for c in nx.find_cliques(G) if len(c) >= k)
-        perc_graph.add_nodes_from(cliques)
-        
-        for c1, c2 in combinations(cliques, 2):
-            if len(c1.intersection(c2)) >= (k - 1):
-                perc_graph.add_edge(c1, c2)
-        return perc_graph
-        # for component in nx.connected_components(perc_graph):
-        #     yield(frozenset.union(*component))
+
 
     def draw_graph(self,graph,file_name):
         #initialze Figure
