@@ -18,6 +18,7 @@ class ClusterGenerator(object):
         self.graphing_on = config.get('graphing', False)
         self.graphing_out = config.get('out_graph_dir')
         self.similarity_merge = float(config.get('similarity_merge'))
+        self.dilution_merge = float(config.get('dilution_merge'))
         self.out_legacy_dir = config.get('out_legacy_dir')
         if not os.path.exists(self.out_legacy_dir):
             logging.info('Created directory %s' % self.out_legacy_dir)
@@ -113,7 +114,11 @@ class ClusterGenerator(object):
 
         ''' Bug #1: not using sets to represents clusters: things get screwed up when using''' 
     def _merge_clusters(self, clusters):
+        logging.debug('Starting to merge clusters. At the start they are')
+
         clusters.sort(key=lambda cluster: len(cluster['cluster_tokens']))
+        for cluster in clusters:
+            logging.debug(cluster.get('cluster_tokens'))
         for i in range(len(clusters)):
             current_cluster_item = clusters[i]
             if not current_cluster_item:
@@ -126,7 +131,12 @@ class ClusterGenerator(object):
                 if not potential_parent_item:
                     continue
                 potential_parent = set(potential_parent_item.get('cluster_tokens'))
-                if ((len(set(current_cluster) & set(potential_parent))/float(len(current_cluster))) > self.similarity_merge):
+                similarity_score = (len(current_cluster & potential_parent)/float(len(current_cluster)))
+                potential_merge = ClusterGenerator._merge_one_cluster(current_cluster, potential_parent)
+                dilution_score = (len(potential_merge - current_cluster) / float(len(current_cluster)))
+                if similarity_score >= self.similarity_merge and dilution_score <= self.dilution_merge:
+                    logging.debug('Merging {{{%s}}} into {{{%s}}} (%f similarity) (%f dilution)' \
+                            % (str(current_cluster), str(potential_parent), similarity_score, dilution_score) )
                     clusters[j]['cluster_tokens'] = list(ClusterGenerator._merge_one_cluster(current_cluster, potential_parent))
                     clusters[i] = None
                     break

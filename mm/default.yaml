@@ -24,6 +24,7 @@ clustering:
     mode: on
     input_json: *score_JSON 
     similarity_merge: 1 # <intersection> / <small size> above this limit merges
+    dilution_merge: 0 # only <= below this number is merged. This is percentage of new terms that can be added
     output_json: &clusters_JSON /tmp/clusters.json
     graphing: off
     out_graph_dir: /tmp/timeslice_graphs/
