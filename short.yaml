@@ -6,18 +6,18 @@ input_helper:
     #docs_metadata: domains/lotr/data/doc_meta.json
 
 legacy_helper:
-    mode: on
+    mode: off
     doc_metadata: domains/lotr/data/doc_meta.json
     num_timeslices: 20
     
 
 
 clustering:
-    mode: on
+    mode: on 
     similarity_merge: 0 # <intersection> / <small size> above this limit merges
     
 
 mapgen:
     mode: on
-    chosen_lines: domains/lotr/out/chosen_lines
+    chosen_lines: lotr.mm
         

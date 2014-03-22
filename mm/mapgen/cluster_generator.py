@@ -4,8 +4,10 @@
 import subprocess
 import logging
 import json
-import networkx as nx
+import sys
+import os
 import os.path
+import snap
 from itertools import combinations
 
 
@@ -59,17 +61,40 @@ class ClusterGenerator(object):
 
     
 
+    # def ccg(self, timeslice_dict):
+    #     g = nx.Graph()
+    #     doc_data = timeslice_dict["doc_data"] # list of documents
+
+    #     for doc in doc_data:
+
+    #         token_ids = [t['id'] for t in doc["tokens"]]
+    #         g.add_path(token_ids)
+    #         for t in doc["tokens"]:
+    #             g.node[t['id']] = t['plaintext']
+    #     return g
+
     def ccg(self, timeslice_dict):
-        g = nx.Graph()
-        doc_data = timeslice_dict["doc_data"] # list of documents
-
+        g = snap.TUNGraph.New()
+        doc_data = timeslice_dict["doc_data"]
+        node_degrees = {}
+        id_to_token = {}
         for doc in doc_data:
-
             token_ids = [t['id'] for t in doc["tokens"]]
-            g.add_path(token_ids)
+            token_ids = []
             for t in doc["tokens"]:
-                g.node[t['id']] = t['plaintext']
-        return g
+                tid = t['id']
+                token_ids += [tid]
+                id_to_token[int(tid)] = t
+
+            for (node_1, node_2) in combinations(token_ids,2):
+                if not g.IsNode(int(node_1)):
+                    g.AddNode(int(node_1))
+                if not g.IsNode(int(node_2)):    
+                    g.AddNode(int(node_2))
+                g.AddEdge(int(node_1), int(node_2))
+                node_degrees[int(node_1)] = node_degrees.get(int(node_1), 0) + 1
+                node_degrees[int(node_2)] = node_degrees.get(int(node_2), 0) + 1
+        return (g, node_degrees, id_to_token)
 
     @property
     def num_timeslices(self):
@@ -83,53 +108,96 @@ class ClusterGenerator(object):
 
     @staticmethod
     def _merge_one_cluster(from_cluster, into_cluster):
-        for word in from_cluster:
-            into_cluster.append(word)
+        into_cluster = from_cluster.union(into_cluster)
         return into_cluster
 
+        ''' Bug #1: not using sets to represents clusters: things get screwed up when using''' 
     def _merge_clusters(self, clusters):
         clusters.sort(key=lambda cluster: len(cluster['cluster_tokens']))
         for i in range(len(clusters)):
             current_cluster_item = clusters[i]
             if not current_cluster_item:
                 continue
-            current_cluster = current_cluster_item.get('cluster_tokens')
+            current_cluster = set(current_cluster_item.get('cluster_tokens'))
+
             # fix this to be merging dictionaries, not just lists
             for j in range(i+1, len(clusters)):
                 potential_parent_item = clusters[j]
                 if not potential_parent_item:
                     continue
-                potential_parent = potential_parent_item.get('cluster_tokens')
+                potential_parent = set(potential_parent_item.get('cluster_tokens'))
                 if ((len(set(current_cluster) & set(potential_parent))/float(len(current_cluster))) > self.similarity_merge):
-                    clusters[j]['cluster_tokens'] = ClusterGenerator._merge_one_cluster(current_cluster, potential_parent)
+                    clusters[j]['cluster_tokens'] = list(ClusterGenerator._merge_one_cluster(current_cluster, potential_parent))
                     clusters[i] = None
+                    break
         return [cluster for cluster in clusters if cluster]
 
+    def clique_percolation(self, g, k, id_to_token):
+        ''' The following class is for suppressing output '''
+        class NullDevice(object):
+            def write(self, s):
+                pass
+
+
+        Communities = snap.TIntIntVV()
+        # save_sysout = sys.stdout
+        # save_syserr = sys.stderr
+        # sys.stdout = NullDevice()
+        # sys.stderr = NullDevice()
+        snap.TCliqueOverlap_GetCPMCommunities(g, k, Communities)
+        # sys.stdout = save_sysout
+        # sys.stderr = save_syserr
+        # devnull.close()
+        community_list = []
+        for C in Communities:
+            cluster_k = []
+            for Node in C:
+                token = id_to_token[Node]['plaintext']
+                cluster_k += [token]
+            cluster_d = {'cluster_tokens': cluster_k, 'k': k}
+            community_list += [cluster_d]
+        return community_list
 
 
     def run(self):
         logging.debug('Cluster Generator: run begin')
         self.timeslice_clusters = {}
         for i in range(self.num_timeslices):
-            g = self.ccg(self.timeslices[i])
+
+            current_timeslice = self.timeslices[i]
+            (g, node_degrees, id_to_token) = self.ccg(current_timeslice)
             if self.graphing_on:
                 out_file = os.path.join(self.graphing_out, ("graph_timeslice_%s.pdf" % str(i)))
                 self.draw_graph(g,out_file)
                 logging.debug('Graph written to %s' % out_file)
 
             clusters = []
-            for k in range(max(g.degree_iter(), key=lambda x: x[1])[1]):
-                for community in nx.k_clique_communities(g,k+2):
-                    cluster_k = []
-                    for node in community:
-                        #n_dict = {'plain': g.node[node], 'id': node}
-                        token = g.node[node]
-                        cluster_k += [token]
+            for k in range(2, max(node_degrees.values())-2):
+                communities = self.clique_percolation(g, k, id_to_token)
+                clusters += communities
+                # Communities = snap.TIntIntVV()
+                # snap.TCliqueOverlap_GetCPMCommunities(g, k+2, Communities)
+                    
 
-                    cluster_d = {'cluster_tokens': cluster_k, 'k': k+2}
-                    clusters += [cluster_d]
-
+                # for C in Communities:
+                #     cluster_k = []
+                #     for Node in C:
+                #         token = id_to_token[Node]['plaintext']
+                #         cluster_k += [token]
+                #     cluster_d = {'cluster_tokens': cluster_k, 'k': k+2}
+                #     clusters += [cluster_d]
             self.timeslice_clusters[i] = self._merge_clusters(clusters)
+                # for community in nx.k_clique_communities(g,k+2):
+                #     cluster_k = []
+                #     for node in community:
+                #         #n_dict = {'plain': g.node[node], 'id': node}
+                #         token = g.node[node]
+                #         cluster_k += [token]
+
+                #     cluster_d = {'cluster_tokens': cluster_k, 'k': k+2}
+                #     clusters += [cluster_d]
+
+            #self.timeslice_clusters[i] = self._merge_clusters(clusters)    
         logging.debug('Clusters for all timeslices')
 
 

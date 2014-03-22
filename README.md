@@ -14,30 +14,18 @@ You will need [networkx], soon to be migrated to [SNAP] in 1.0.0(stay tuned). Yo
 
 Once you have these packages, just clone this github repository! Write to us if you have any problems.
 
-
 [networkx]: http://networkx.github.io/
 [SNAP]: http://snap.stanford.edu/snap/index.html
 [nltk]: http://www.nltk.org/
 [brew version]: http://docs.python-guide.org/en/latest/starting/install/osx/
 
-#Handling Input
+# Running MetroMaps
+Each domain requires its own configuration file (see docs/ for some tips). Once you have your configuration ready, run it with:
 
-MM is customized by specifying a configuration file at input. The fields that can be edited are in `mm/default.yaml`.
+	python2.7 mmrun.py configuration.yaml
 
-#Writing your own `input_handler:`
-Make sure that your input handler returns the following fields:
+Default `lotr.yaml` configuration works on the Lord of the Rings domain, and outputs the final MetroMap into `lotr.mm`
 
-    * 'doc_counts' (docid -> [(token_id -> count), (token_id -> count))
-    * 'global_counts' (token_id -> global_count)
-    * 'global_tokens' (word -> token_id) # good idea to use the same id for words with the same stem
-    * 'representative_tokens' (token_id -> {'plaintext': count}) # the dictionary may contain several plainwords with respective counts. 
 
-Additionally you must create a `doc_metadata.json` file that is a list of dictionaries with the following fields:
-	[{
-        "id": "1",
-        "name": "1.txt",
-        "timestamp": "1"
-    },...]
-Specify this file in `legacy helper:` under the key `doc_metadata` (see default.yaml for an example)
 
 
