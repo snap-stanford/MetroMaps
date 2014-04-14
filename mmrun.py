@@ -49,11 +49,21 @@ def Run_map_generator(configs):
     else:
         logging.info('Skipping map generator')
 
+def Run_visualization(configs):
+    viz_configs = configs.get('visualization')
+    if (viz_configs.get('mode')):
+        logging.info("Running visualization")
+        viz_handler = mm.viz.visualization.VizGenerator(viz_configs)
+        viz_handler.run()
+    else:
+        logging.info('Skipping viz generator')
+
 def Main(configs):
     Run_input_handler(configs)    
     Run_legacy_handler(configs)
     Run_clustering_handler(configs)
     Run_map_generator(configs)
+    Run_visualization(configs)
 
 
 

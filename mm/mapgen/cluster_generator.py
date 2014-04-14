@@ -30,7 +30,7 @@ class ClusterGenerator(object):
 
 
     def draw_graph(self,graph,file_name):
-        #initialze Figure
+        #initialize Figure
         if self.graphing_on:
             import matplotlib.pyplot as plt
             import pylab

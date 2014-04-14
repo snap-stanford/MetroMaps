@@ -1,5 +1,5 @@
 input_helper:
-    mode: off
+    mode: on
     name: whitelistcounter
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
@@ -13,12 +13,15 @@ legacy_helper:
 
 
 clustering:
-    mode: on 
+    mode: off
     similarity_merge: .95 # <intersection> / <small size> above this limit merges
     dilution_merge: .1
     
 
 mapgen:
-    mode: on
+    mode: off
     chosen_lines: lotr.mm
-        
+
+viz:
+    mode: on
+    input_map: lotr.mm    

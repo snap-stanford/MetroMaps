@@ -1,0 +1,3 @@
+Trying to fix the visualization stuff today. 
+
+With the loss of my old laptop, it seems like a whole bunch of old data went missing. That's ok -- we've got the old json files in the 
