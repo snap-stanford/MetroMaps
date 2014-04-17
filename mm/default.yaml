@@ -36,6 +36,7 @@ mapgen:
     cluster_dir: /tmp/clusters
     raw_lines: /tmp/raw_lines
     line_descriptions: /tmp/line_descriptions
-    chosen_lines: final_map.mm
+    chosen_lines: /tmp/final_lines.mm
+    chosen_files_for_map: final_map.mm
     
     
