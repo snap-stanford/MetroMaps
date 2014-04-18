@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.7
+#! /usr/bin/env python2.7
 
 import argparse
 import mm.inputhelpers
@@ -50,7 +50,7 @@ def Run_map_generator(configs):
         logging.info('Skipping map generator')
 
 def Run_visualization(configs):
-    viz_configs = configs.get('visualization')
+    viz_configs = configs.get('vizbuilder')
     if (viz_configs.get('mode')):
         logging.info("Running visualization")
         viz_handler = mm.viz.visualization.VizGenerator(viz_configs)
@@ -58,33 +58,26 @@ def Run_visualization(configs):
     else:
         logging.info('Skipping viz generator')
 
-def Main(configs):
+def Run(configs):
     Run_input_handler(configs)    
     Run_legacy_handler(configs)
     Run_clustering_handler(configs)
     Run_map_generator(configs)
-    Run_visualization(configs)
+    # Run_visualization(configs)
 
 
-
-
-
-if __name__=='__main__':
-    logging.basicConfig(format='%(levelname)s %(asctime)s %(message)s', level=logging.DEBUG)
-    parser = argparse.ArgumentParser(description='Run Metromaps by specifying a config file')
-    parser.add_argument('config_file', help='See default.yaml for configuration options')
-    parser.add_argument('--defaults', default='mm/default.yaml', help='the default values get preloaded from this yaml configuration file')
-    args = parser.parse_args()
+def main(config_file, defaults="mm/default.yaml"):
     config_dict = {}
 
-    with open(args.defaults) as df:
+    logging.basicConfig(format='%(levelname)s %(asctime)s %(message)s', level=logging.DEBUG)
+    with open(defaults) as df:
         try: 
             config_dict = yaml.load(df)
         except yaml.composer.ComposerError:
             logging.error('ERROR in yaml-reading the default config file')
             raise
     sections = config_dict.keys()
-    with open(args.config_file) as cf:
+    with open(config_file) as cf:
         try: 
             new_config = yaml.load(cf)
             for section in sections:
@@ -93,6 +86,19 @@ if __name__=='__main__':
         except yaml.composer.ComposerError:
             logging.error('ERROR in reading the input config file')
             raise
+    log_level = {'error':logging.ERROR, 'debug':logging.DEBUG}.get(config_dict.get('global',{}).get('log_level'), logging.DEBUG)
+
+    logging.basicConfig(level=log_level)
+
     logging.debug('final configuration: %s' % (str(config_dict)))
-    Main(config_dict)
+    Run(config_dict)
+
+
+if __name__=='__main__':
+    parser = argparse.ArgumentParser(description='Run Metromaps by specifying a config file')
+    parser.add_argument('config_file', help='See default.yaml for configuration options')
+    parser.add_argument('--defaults', default='mm/default.yaml', help='the default values get preloaded from this yaml configuration file')
+    args = parser.parse_args()
+    main(args.config_file, args.defaults)
+    
     

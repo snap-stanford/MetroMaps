@@ -22,6 +22,6 @@ mapgen:
     mode: off
     chosen_lines: lotr.mm
 
-viz:
+vizbuilder:
     mode: on
     input_map: lotr.mm    
