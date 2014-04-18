@@ -1,0 +1,42 @@
+global:
+    log_level: 'error'
+
+input_helper:
+    mode: on
+    name: whitelistcounter
+    encoding: UTF-8
+    in_encoding: cp1252
+    whitelist: domains/test/whitelist.txt # FILL OUT example: domains/lotr/data/whitelist.txt (new-line separated)
+    input_directory: domains/test/data # FILL OUT example: domains/lotr/data/rawtext
+    outfile: &input_out /tmp/mm_input.json
+    #docs_metadata: 
+
+legacy_helper:
+    mode: on
+    input_json_file: *input_out #your_output_from_above FILL OUT HERE
+    output_dir: /tmp/query_result 
+    doc_metadata: domains/test/doc_metadata.json ## FILL OUT
+    num_timeslices: 1
+    output_json: &score_JSON /tmp/legacy_handler_out.json
+    choose_representative_token: on
+    
+
+clustering:
+    mode: on
+    input_json: *score_JSON 
+    similarity_merge: 1 # <intersection> / <small size> above this limit merges
+    dilution_merge: 0 # only <= below this number is merged. This is percentage of new terms that can be added
+    output_json: &clusters_JSON /tmp/clusters.json
+    graphing: off
+    out_graph_dir: /tmp/timeslice_graphs/
+    # Remove the following when cleaning project
+    out_legacy_dir: /tmp/clusters/clusters
+
+mapgen:
+    mode: on
+    cluster_dir: /tmp/clusters
+    raw_lines: /tmp/raw_lines
+    line_descriptions: /tmp/line_descriptions
+    chosen_lines: /tmp/final_lines.mm
+    chosen_docs_for_map: final_map.mm
+
