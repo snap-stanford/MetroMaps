@@ -33,7 +33,9 @@ Each domain requires its own configuration file (see docs/ for some tips). Once 
 
 	python2.7 mmrun.py configuration.yaml
 
-Default `lotr.yaml` configuration works on the Lord of the Rings domain. See the details in `lotr.yaml` and `mm/default.yaml`
+Default `lotr.yaml` configuration works on the Lord of the Rings domain. See the details in `lotr.yaml` and `mm/default.yaml`. To run LOTR domain, do
+
+        python2.7 mmrun.py lotr.yaml
 
 # Writing your own configuration file
 
