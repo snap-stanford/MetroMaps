@@ -42,11 +42,11 @@ mapgen:
     chosen_lines: /tmp/final_lines.mm
     chosen_docs_for_map: final_map.mm
 
-# vizbuilder:
-#     mode: on
-#     name: ClusterNames
-#     input_json_file: *input_out
-#     input_lines: final_map.mm
-#     final_map_json: final_map.json
+vizbuilder:
+    mode: on
+    name: clusterdescription
+    input_json_file: *input_out
+    input_lines: final_map.mm
+    final_map_json: final_map.json
 
 

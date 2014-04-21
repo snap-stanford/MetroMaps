@@ -12,6 +12,7 @@ class LegacyGenerator(object):
 		self.raw_lines = configs['raw_lines']
 		self.line_descriptions = configs['line_descriptions']
 		self.chosen_lines = configs['chosen_lines']
+		self.chosen_lines_json = configs['chosen_lines_json']
 
 
 	def run(self):		
@@ -23,5 +24,5 @@ class LegacyGenerator(object):
 		logging.info('Line generator done. See %s for output' %self.raw_lines)
 		get_words_of_line.main(self.raw_lines,self.line_descriptions)
 		logging.info('Getting description done. See %s for output' %self.line_descriptions)
-		candidate_lines_to_map.main(self.line_descriptions, self.chosen_lines)
-		logging.info('Getting map done. See %s for output' %self.chosen_lines)
+		candidate_lines_to_map.main(self.line_descriptions, self.chosen_lines, self.chosen_lines_json)
+		logging.info('Getting map done. See %s (and %s) for output' % (self.chosen_lines, self.chosen_lines_json))

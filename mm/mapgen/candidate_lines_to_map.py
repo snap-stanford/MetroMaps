@@ -29,8 +29,9 @@ to read in clusters/lines from files.
 '''
 
 
-
+import logging
 import sys
+import json
 
 def log(*args):
     result = ""
@@ -54,6 +55,22 @@ class Cluster:
         for word in self.words:
             result+=word[:-1]+" " #remove commas separating the words
         return result
+
+    @property
+    def time(self):
+        # TODO: change this to extract the year string
+        return self.clusterid 
+
+    def toJSON(self):
+        cluster_id = self.clusterid
+        startof_date = len("clusters_")
+        year = cluster_id[startof_date:startof_date+4]
+        month = cluster_id[startof_date+4:startof_date+6]
+        day = cluster_id[startof_date+6:startof_date+8]
+        time = "%s-%s-%s" % (year, month,day)
+        json_object = {"id": self.clusterid, "time": time, "words": list(self.words)}
+        return json_object
+
 
 #Store words associated with the line and associated clusters.
 class Line:
@@ -86,6 +103,19 @@ class Line:
         for cluster in self.clusters:
             result.append(cluster.serialize()+"\n")
         return ''.join(result)
+
+    def toJSON(self, existing_nodes={}):
+        json_object = {"nodeIDs":[], "words":list(self.words)}
+        for cluster in self.clusters:
+            clusterJSON = cluster.toJSON()  
+            clusterid = clusterJSON["id"]
+            if not clusterJSON["id"] in existing_nodes:
+                existing_nodes[clusterid] = clusterJSON
+            json_object["nodeIDs"] += [clusterid]
+        return json_object
+        # note: the existing_nodes should be updated
+        # by reference
+        
 
 '''Store all the candidate lines
 and also track the lines you've chosen so far.
@@ -124,6 +154,14 @@ class AllLines:
         for line in self.chosenlines:
             result.append(line.serialize())
         return "\n".join(result)+"\n"
+
+    def toJSON(self):
+        json_object = {'lines': [], 'nodes':{}}
+        for i, line in enumerate(self.chosenlines):
+            line_json = line.toJSON(json_object["nodes"])
+            line_json["id"] = i+1     
+            json_object['lines'] += [line_json]     
+        return json_object  
 
     '''Return the number of clusters in the line
     that already have other lines passing through it.'''
@@ -191,10 +229,9 @@ class AllLines:
                 if fractionNew >= fractionNewNeeded and self.enoughCoverage(line):
                     self.chooseLine(line)
 
-def main(infilename, outfile):
-    outfile_json = None
-    if len(sys.argv) == 4:
-        outfile_json = sys.argv[3]
+def main(infilename, outfile, outfile_json=None):
+    logging.debug('Called candidate lines to map with output json %s' %outfile_json)
+    
     with open(infilename) as f:
         f = open(infilename)
         candidatelines = AllLines(f.read())
@@ -204,12 +241,19 @@ def main(infilename, outfile):
     .3+.15*numberLinesChosen so far.'''
     candidatelines.getCrossingLines(3, .3, .15) 
 
-    with open(outfile, 'w') as fo:
-        fo.write(candidatelines.serializeChosenLines())
+    # with open(outfile, 'w') as fo:
+    #     fo.write(candidatelines.serializeChosenLines())
+    if outfile_json:
+        with open(outfile_json, 'w') as fo:
+            logging.debug('Dumping to JSON file')
+
+            json.dump(candidatelines.toJSON(), fo)
+
 
 if __name__=='__main__':
     infilename = sys.argv[1]
     outfile = sys.argv[2]
+
     main(infilename, outfile)
     #if outfile_json: 
     #    with open(outfile_json) as jsonout:

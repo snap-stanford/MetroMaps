@@ -5,6 +5,7 @@ import mm.inputhelpers
 import mm.inputhelpers.factory
 import mm.input
 import mm.mapgen
+import mm.viz
 import logging
 import yaml
 import yaml.composer
@@ -53,8 +54,8 @@ def Run_visualization(configs):
     viz_configs = configs.get('vizbuilder')
     if (viz_configs.get('mode')):
         logging.info("Running visualization")
-        viz_handler = mm.viz.visualization.VizGenerator(viz_configs)
-        viz_handler.run()
+        viz_handler = mm.viz.ReadConfig(viz_configs)
+        # viz_handler.run()
     else:
         logging.info('Skipping viz generator')
 
@@ -63,7 +64,7 @@ def Run(configs):
     Run_legacy_handler(configs)
     Run_clustering_handler(configs)
     Run_map_generator(configs)
-    # Run_visualization(configs)
+    Run_visualization(configs)
 
 
 def main(config_file, defaults="mm/default.yaml"):
@@ -90,7 +91,7 @@ def main(config_file, defaults="mm/default.yaml"):
 
     logging.basicConfig(level=log_level)
 
-    logging.debug('final configuration: %s' % (str(config_dict)))
+    logging.debug('final configuration: \n%s' % (str(yaml.dump(config_dict))))
     Run(config_dict)
 
 
