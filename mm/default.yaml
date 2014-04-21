@@ -47,6 +47,7 @@ vizbuilder:
     name: clusterdescription
     input_lines: final_map.mm
     final_map_json: final_map.json
-    website_output: . #directory to which web files will be stored
+    producehtml: on
+    website_output_dir: . #directory to which web files will be stored
 
 

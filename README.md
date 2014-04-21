@@ -22,6 +22,9 @@ Once you have these packages, just clone this github repository! Write to us if 
 [nltk]: http://www.nltk.org/
 [brew version]: http://docs.python-guide.org/en/latest/starting/install/osx/
 
+I also included a `requirements.txt` by doing a freeze on my current `pip` package manager. This list contains all of the 
+requirement packages and more. So if you fulfill those requirements, you are good to go.
+
 # Running MetroMaps
 Each domain requires its own configuration file (see docs/ for some tips). Once you have your configuration ready, run it with:
 

@@ -27,5 +27,8 @@ vizbuilder:
     name: clusterdescription
     input_lines_json: domains/lotr/out/final/lotr.json
     final_map_viz_json: domains/lotr/out/final/lotr_viz.json
-    website_output: domains/lotr/out
+    producehtml: on
+    website_output_dir: domains/lotr/out
+    webpage_name: LOTR.html
+
 
