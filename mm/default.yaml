@@ -45,8 +45,8 @@ mapgen:
 vizbuilder:
     mode: on
     name: clusterdescription
-    input_json_file: *input_out
     input_lines: final_map.mm
     final_map_json: final_map.json
+    website_output: . #directory to which web files will be stored
 
 

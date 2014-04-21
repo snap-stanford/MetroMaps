@@ -55,7 +55,7 @@ def Run_visualization(configs):
     if (viz_configs.get('mode')):
         logging.info("Running visualization")
         viz_handler = mm.viz.ReadConfig(viz_configs)
-        # viz_handler.run()
+        viz_handler.run()
     else:
         logging.info('Skipping viz generator')
 

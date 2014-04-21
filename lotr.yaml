@@ -1,30 +1,31 @@
 input_helper:
-    mode: on
+    mode: off
     name: whitelistcounter
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
     #docs_metadata: domains/lotr/data/doc_meta.json
 
 legacy_helper:
-    mode: on
+    mode: off
     doc_metadata: domains/lotr/data/doc_meta.json
     num_timeslices: 20
     
 
 clustering:
-    mode: on
+    mode: off
     similarity_merge: .95 # <intersection> / <small size> above this limit merges
     dilution_merge: .1
     
 
 mapgen:
-    mode: on
-    chosen_lines: lotr.mm
-    chosen_lines_json: lotr.json
+    mode: off
+    chosen_lines: domains/lotr/out/final/lotr.mm
+    chosen_lines_json: domains/lotr/out/final/lotr.json
 
 vizbuilder:
-    mode: off
+    mode: on
     name: clusterdescription
-    input_lines: lotr.mm
-    final_map_json: lotr.json
+    input_lines_json: domains/lotr/out/final/lotr.json
+    final_map_viz_json: domains/lotr/out/final/lotr_viz.json
+    website_output: domains/lotr/out
 
