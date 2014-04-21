@@ -1,0 +1,40 @@
+{
+        "articles": {
+                "id" : { 
+                        "id":same_id_as_key -- string
+                        "image":"/static/img.png
+                        "importance":"1"
+                        "nodeID":
+                        "previewText": "some text that's visible"
+                        "publisher": "string"
+                        "timestamp": "2013-03-02"
+                        "title": "your title for the article"
+                        "url" : "http://"
+                }
+        }
+        "lines": {
+                "id": 0,
+                "line_label": "label for the line"
+                "nodeIDs": [
+                        "somelongid_1",
+                        "somelongid_1",
+                ]
+        },
+        "nodes":{
+                "nodeid": {
+                        "id": "same as the key -- string"
+                        "articleIDs":[
+                                list of article ids from above
+                        ],
+                        "cluster_words": "aviv israel tel tel_aviv",
+                        "importance": "1"
+                        "label": "usually name of the article, but can be anything"
+                        "lineIDs": [
+                                integers corresponding to lineIDs from before
+                        ]
+                        "time": "2013-05-02"
+                }
+        }
+
+                        
+}

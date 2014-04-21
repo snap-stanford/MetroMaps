@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<!-- saved from url=(0030)http://metromaps.stanford.edu/ -->
+<html lang="en" class=""><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>Metromaps</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Stanford InfoLab: Metromaps">
+  <meta name="author" content="Thomas Von der Ohe, Heidi Wang">
+
+  <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+      <script src="../assets/js/html5shiv.js"></script>
+      <![endif]-->
+
+      <!-- Our own styles -->
+      <link rel="stylesheet" type="text/css" href="./Metromaps_Website_files/main-style.css">
+      <link rel="stylesheet" type="text/css" href="./Metromaps_Website_files/tile.css">
+      <link rel="stylesheet" type="text/css" href="./Metromaps_Website_files/navigation-bar.css">
+      <link rel="stylesheet" href="./Metromaps_Website_files/jquery.fancybox.css" type="text/css" media="screen">       
+      <link href="./Metromaps_Website_files/css" rel="stylesheet" type="text/css">
+
+    <style type="text/css"></style><style type="text/css">.fancybox-margin{margin-right:0px;}</style></head>
+
+    <body style="zoom: 1; cursor: -webkit-grab;">
+
+      <!-- navigation bar -->
+      <div class="main-menu">
+        <div class="brand">
+         <span class="logo">Metromaps</span>
+         <span> <a href="http://metromaps.stanford.edu/info.html" class="info-link"> more info </a> </span>
+       </div>
+     </div>
+     <!-- /navigation bar -->
+
+
+       
+
+     <div class="box">
+      <div id="map-container"><div class="kineticjs-content" style="position: relative; display: inline-block; width: 2000px; height: 400px;"><canvas width="4000" height="800" style="padding: 0px; margin: 0px; border: 0px; background-color: transparent; width: 2000px; height: 400px; position: absolute; background-position: initial initial; background-repeat: initial initial;"></canvas></div></div>
+    </div>
+
+
+<!-- <div>
+  <a href='#' id='addTileButton' class="demo-pricing demo-pricing-1"> Simulate click on node </a> 
+  <a href='#' id='changeColorButton' class="demo-pricing demo-pricing-1"> change color </a>
+  <br> </br>
+</div> -->
+
+<!-- add Article Previews-->
+<div class="box">
+
+  <span id="info" style="display: none;"> Info: For a preview of different articles click on a node </span>
+  <div class="masonry" id="container" style="position: relative; height: 400px;"><div id="article0" class="item" style="width: 300px; height: 200px; position: absolute; left: 0px; top: 0px;"><div class="item-content" style="width: 300px; height: 200px; background-color: rgb(212, 43, 79); background-position: initial initial; background-repeat: initial initial;"><div class="title importance2">Netanyahu cool to Arab initiative<div class="publisher timestamp">(unknown), 2013-06-05</div></div></div><a class="fancybox fancybox.iframe" href="http://bigstory.ap.org/article/israeli-official-palestinians-unwilling-talks"><div class="article-background-pic" style="left: 0px; top: 0px; width: 300px; height: 200px;"></div></a></div><div id="article1" class="item" style="width: 400px; height: 200px; position: absolute; left: 300px; top: 0px;"><div class="item-content" style="width: 400px; height: 200px; background-color: rgb(212, 43, 79); background-position: initial initial; background-repeat: initial initial;"><div class="title importance4">Netanyahu cool to Arab initiative <div class="publisher timestamp">utsandiego, 2013-06-05</div></div></div><a class="fancybox fancybox.iframe" href="http://www.utsandiego.com/news/2013/jun/05/netanyahu-cool-to-arab-initiative/"><div class="article-background-pic" style="left: 0px; top: 0px; width: 400px; height: 200px;"></div></a></div><div id="article2" class="item" style="width: 400px; height: 200px; position: absolute; left: 700px; top: 0px;"><div class="item-content" style="width: 400px; height: 200px; background-color: rgb(212, 43, 79); background-position: initial initial; background-repeat: initial initial;"><div class="title importance3">Netanyahu cool to Arab initiative <div class="publisher timestamp">sfgate, 2013-06-05</div></div></div><a class="fancybox fancybox.iframe" href="http://www.sfgate.com/news/world/article/Netanyahu-cool-to-Arab-initiative-4577720.php"><div class="article-background-pic" style="left: 0px; top: 0px; width: 400px; height: 200px;"></div></a></div><div id="article3" class="item" style="width: 450px; height: 200px; position: absolute; left: 0px; top: 200px;"><div class="item-content" style="width: 450px; height: 200px; background-color: rgb(212, 43, 79); background-position: initial initial; background-repeat: initial initial;"><div class="title importance5">JERUSALEM : Israeli official : Palestinians unwilling for talks - World Wires <div class="publisher timestamp">miamiherald, 2013-06-05</div></div></div><a class="fancybox fancybox.iframe" href="http://www.miamiherald.com/2013/06/05/3434053/israeli-official-palestinians.html"><div class="article-background-pic" style="left: 0px; top: 0px; width: 450px; height: 200px;"></div></a></div></div>
+
+</div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="./Metromaps_Website_files/util.js" type="text/javascript"></script>
+    <script src="./Metromaps_Website_files/jquery-1.9.0.min.js"></script>
+    <script src="./Metromaps_Website_files/masonry.pkgd.min.js"></script>
+    <script type="text/javascript" src="./Metromaps_Website_files/jquery.fancybox.pack.js"></script>
+    <script src="./Metromaps_Website_files/tile-lightbox.js" type="text/javascript"></script>
+    <script src="./Metromaps_Website_files/tile.js" type="text/javascript"></script>
+    <!--<script src="data/israel-articles.js" type="text/javascript"></script>
+    <script src="data/israel.js" type="text/javascript"></script>-->
+    <script src="./final-json.js" type="text/javascript"></script>
+    <!--<script src="js/kinetic-v4.7.2.min.js"></script>-->
+    <script src="./Metromaps_Website_files/kinetic.js"></script>
+    <script src="./Metromaps_Website_files/init_helper.js"></script>
+    <script src="./Metromaps_Website_files/layout.js"></script>
+    <script src="./Metromaps_Website_files/helpers.js"></script>
+    <script src="./Metromaps_Website_files/eventhandlers.js"></script>
+    <script src="./Metromaps_Website_files/init.js"></script>
+    <script src="./Metromaps_Website_files/drawNodes.js"></script>
+    <script src="./Metromaps_Website_files/drawLines.js"></script>
+    <script src="./Metromaps_Website_files/drawMap.js"></script>
+
+    
+</body></html>
