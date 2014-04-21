@@ -4,7 +4,10 @@ Metromaps
 Welcome to Metromaps, an innovative way of extracting story-lines from your chronological text domain.
 
 # Version
-0.1.2. Changes from 0.1.1:
+v0.2.0. Working visualization of clusters. No mapping back to articles, as of yet 
+
+
+v0.1.2. Changes from 0.1.1:
 
 - updgrade to SNAP.PY instead of networkx
 
@@ -30,7 +33,7 @@ Each domain requires its own configuration file (see docs/ for some tips). Once 
 
 	python2.7 mmrun.py configuration.yaml
 
-Default `lotr.yaml` configuration works on the Lord of the Rings domain, and outputs the final MetroMap into `lotr.mm`
+Default `lotr.yaml` configuration works on the Lord of the Rings domain. See the details in `lotr.yaml` and `mm/default.yaml`
 
 # Writing your own configuration file
 
@@ -100,14 +103,25 @@ The important field to specify here is `doc_metadata` which contains a list of d
 Clustering is done through clique-perculation and communities are combined depending on the similarity and dilution_merge fields specify the parameters that create clusters. 
 
 ##mapgen:
-
+The important fields here are `chosen_lines` and `chosend_lines_json`. The others are temporary files.
     mode: "on" or "off" to run it or not
     cluster_dir: /tmp/clusters
     raw_lines: /tmp/raw_lines
     line_descriptions: /tmp/line_descriptions
-    chosen_lines: final_map.mm
+    chosen_lines: final_map.mm (human readable )
+    chosen_lines_json: chosen_lines.json
     
-    
+##vizbuilder:
+
+In design, `vizbuilder` is similar to `input_helper` in that you choose which visualization builder to run (by specifying the name field). Currently there is only one option, but I am working hard to increase this number. The only one currently available is `clusterdescription` which labels each cluster with the words describing the cluster. 
+
+    mode: "on" or "off"
+    name: clusterdescription 
+    input_lines_json: same as the 'chosen_lines_json' field above
+    final_map_viz_json: online-visualization friendly json stored here
+    producehtml: "on" or "off" whether to render the html page 
+    website_output_dir: directory where web pages will be stored to
+    webpage_name: Metromaps.html (name of the html file in the "website_output_dir")
 
 
 
