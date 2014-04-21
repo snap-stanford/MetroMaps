@@ -1,6 +1,7 @@
 import logging
 import json
-from web_generator import WebGeneratorViz
+import web_generator
+import os
 
 def construct(config):
 	return ClusterDescriptionViz(config)
@@ -83,13 +84,13 @@ class ClusterDescriptionViz(object):
 		(self.nodes, self.lines) = self._read_json_input()
 		
 	def run(self):
-		output_viz_json = {"articles": []}
-		out_lines = []
+		output_viz_json = {"articles": {}}
+		out_lines = {}
 		out_nodes = {}
 		node_to_lines = {}
 		for line in self.lines:
 			line_d = {"id": line["id"], "line_label": ", ".join(line['words']), "nodeIDs": line['nodeIDs']}
-			out_lines += [line_d]
+			out_lines[str(line["id"])]= line_d
 			for node in line['nodeIDs']:
 				current_lines = node_to_lines.get(node, [])
 				current_lines += [line["id"]]
@@ -98,7 +99,7 @@ class ClusterDescriptionViz(object):
 		for nodeid, node in self.nodes.iteritems():
 			cluster_words = " ".join(node["words"])
 			node_d = {"id": node["id"],
-				"articleIDs": {}, "cluster_words": cluster_words,
+				"articleIDs": [], "cluster_words": cluster_words,
 				"importance": "1", "label": cluster_words,
 				"lineIDs": node_to_lines.get(node['id'], []),
 				"time": node["time"]}
@@ -112,7 +113,7 @@ class ClusterDescriptionViz(object):
 			logging.debug('viz dumped to %s' % self.output)
 
 		if self.producehtml:
-			wgv = WebGeneratorViz(self.output, self.website_output_dir, self.webpage_name)
+			wgv = web_generator.WebGeneratorViz(self.output, self.website_output_dir, self.webpage_name)
 			wgv.run()
 			final_product = os.path.join(self.website_output_dir, self.webpage_name)
 			logging.info('Preview visualization by opening %s' % final_product)
