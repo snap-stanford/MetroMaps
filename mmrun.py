@@ -24,12 +24,11 @@ def Run_input_handler(configs):
         logging.info("Skipping input handler")
 
 
-def Run_legacy_handler(configs):
-    legacy_configs = configs.get('legacy_helper')
+def Run_slicing_handler(configs):
+    legacy_configs = configs.get('slicing')
     if (legacy_configs.get('mode')):
         logging.info("Converting to legacy format")
-
-        legacy_handler = mm.input.LegacyHandler(legacy_configs)
+        legacy_handler = mm.input.SlicingHandler(legacy_configs)
         legacy_handler.write()
         logging.info("Legacy format written to %s" %(configs.get('legacy_helper').get('output_dir')))
 
@@ -61,7 +60,7 @@ def Run_visualization(configs):
 
 def Run(configs):
     Run_input_handler(configs)    
-    Run_legacy_handler(configs)
+    Run_slicing_handler(configs)
     Run_clustering_handler(configs)
     Run_map_generator(configs)
     Run_visualization(configs)

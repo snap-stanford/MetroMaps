@@ -19,7 +19,7 @@ input_helper:
 #     - index, cluster_start_date, cluster_end_date, doc_data
 #     - doc_data: {"tokens": [{tfidf,plaintext,token_doc_count,id}], "doc_metadata": {timestamp,id,name}
 # This might be grounds for optimization
-legacy_helper:
+slicing:
     <<: *GLOBALS
     mode: on
     output_dir: /tmp/query_result 

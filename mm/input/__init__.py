@@ -1,4 +1,4 @@
-from .legacy_handler import LegacyHandler
+from .slicing import LegacyHandler
 
 
 def ReadConfig(configs):

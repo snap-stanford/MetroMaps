@@ -5,14 +5,14 @@ global: &GLOBALS
 
 input_helper:
     <<: *GLOBALS
-    mode: on
+    mode: off
     name: whitelistcounter
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
 
-legacy_helper:
+slicing:
     <<: *GLOBALS
-    mode: on
+    mode: off
     num_timeslices: 20
     
 
@@ -38,5 +38,3 @@ vizbuilder:
     producehtml: on
     website_output_dir: domains/lotr/out
     webpage_name: LOTR.html
-
-

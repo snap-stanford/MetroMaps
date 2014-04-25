@@ -6,7 +6,7 @@ import os
 import logging
 from itertools import combinations
 
-class LegacyHandler:
+class SlicingHandler:
     def __init__(self, legacy_helper_config_dict):
         def token_stats(doc_counts):
             token_max = {} # maps token_id -> max doc frequency
