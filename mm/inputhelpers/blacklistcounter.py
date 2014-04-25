@@ -8,6 +8,8 @@ import logging
 
 class BlackListCounter():
     
+    # Gets called externally with the configuration file to initialize
+    # the 
     def __init__(self,config):
         # all of the fields in the config file become instance variables
         self.__dict__.update(config)
@@ -17,15 +19,15 @@ class BlackListCounter():
         self.total_counts = {}
         self.doc_counts = {}
         self.plainword_counts = {}
-        self.whitelist = self._read_whitelist(self.whitelist)
+        self.blacklist = self._read_newline_list(self.blacklist)
         self.synonyms = {} # id to {word: count}
         self._next_token_id = 1
         self._next_doc_id = 1
 
 
-    def _read_whitelist(self, whitelist_filename):
+    def _read_newline_list(self, blacklist_list):
         l = []
-        with open(whitelist_filename) as f:
+        with open(blacklist_list) as f:
             for line in f:
                 l += [self.sp.clean(line)]
         return set(l)
@@ -55,31 +57,48 @@ class BlackListCounter():
             for line in fi:
                 line = line.strip()
                 for dirty_word in line.split():
-                    
                     word = self.sp.clean(dirty_word)
-                    if word in self.whitelist:
+                    if word not in self.blacklist:
                         word_id = self._get_token_id(word)
                         self._count_word(word_id, doc_id, dirty_word)
-    def run(self):
 
+    def run(self):
         filenames = os.listdir(self.input_directory)
-        logging.debug('Processing %i files' % (len(filenames)))
-        for filename in filenames:
+        total_files = len(filenames)
+        logging.info('Processing %i files' % (total_files))
+        for i, filename in enumerate(filenames):
+            if (i % (total_files / 10)) == 1:
+                logging.info('Processed %i files so far' % i)
             full_path = os.path.join(self.input_directory, filename)
             self.run_filename(full_path)
+
+        # Cannot delete during iteration, so saving the keys
+        tokens_to_delete = []
+        for token, count in self.total_counts.iteritems():
+            if count <= self.discard_frequency:
+                tokens_to_delete += [token]
+
+        for token in tokens_to_delete:
+            del self.total_counts[token]
+            for doc in self.doc_counts:
+                doc_d = self.doc_counts[doc]
+                if token in doc_d:
+                    del doc_d[token]
+
 
     def _get_representative_tokens(self):
         # reverse token_to_id with the counts from global counts
 
 
         return {v: k for k,v in self.token_to_id.items()}
-    
+
+    ## Called at last moment
     def save(self):
         
         
 
        
-        together_out = self.outfile
+        together_out = self.mm_standard_input
         with open(together_out,'w') as out_file:
             d={}
             d['global_tokens'] = self.token_to_id
@@ -121,31 +140,6 @@ class BlackListCounter():
             self._next_doc_id += 1
         return doc_id
 
-    '''
-    def run(self):
-        if self.input_directory:
-            self.run_dir(self.input_directory)
-    '''
-    '''
-    def run_filename(self, filename):
-        # Specify filename to count tokens in that file. 
-        with open(filename) as fi:
-            doc_id = _get_doc_id(filename)
-            for line in fi:
-                for word in line.split():
-                    if word == "Bilbo":
-                        print 'hoorah'
-                        print self.sp.clean(word)
-                    word = self.sp.clean(word)
-                    word_id = self._get_token_id(self, word)
-                    _count_word(word_id, 
-    '''              
-    '''j
-    def run_dir(self, dirname):
-        filenames = os.listdir(dirname)
-        for filename in filenames:
-            full_path = os.path.join(dirname, filename)
-            self.run_filename(full_path)
-   ''' 
+    
 def construct(config):
-    return WhiteListCounter(config)
+    return BlackListCounter(config)
