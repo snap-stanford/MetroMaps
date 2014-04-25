@@ -1,21 +1,27 @@
-global:
+global: &GLOBALS
     log_level: 'debug'
+    doc_metadata: SPECIFY #FILL OUT
+    mm_standard_input: /tmp/mm_input.json
+
 
 input_helper:
+    <<: *GLOBALS
     mode: on
     name: whitelistcounter
     encoding: UTF-8
     in_encoding: cp1252
     whitelist: specify_your_whitelist_file_here # FILL OUT example: domains/lotr/data/whitelist.txt (new-line separated)
     input_directory: split_input_files_here # FILL OUT example: domains/lotr/data/rawtext
-    outfile: &input_out /tmp/mm_input.json
         
 
-    #docs_metadata: domains/lotr/data/doc_meta.json
 
+# output_json contains a list of clusters (a dictionary):
+#     - index, cluster_start_date, cluster_end_date, doc_data
+#     - doc_data: {"tokens": [{tfidf,plaintext,token_doc_count,id}], "doc_metadata": {timestamp,id,name}
+# This might be grounds for optimization
 legacy_helper:
+    <<: *GLOBALS
     mode: on
-    input_json_file: *input_out #your_output_from_above FILL OUT HERE
     output_dir: /tmp/query_result 
     doc_metadata: specify_doc_metadata_here ## FILL OUT
     num_timeslices: 20
@@ -24,6 +30,7 @@ legacy_helper:
     
 
 clustering:
+    <<: *GLOBALS
     mode: on
     input_json: *score_JSON 
     similarity_merge: 1 # <intersection> / <small size> above this limit merges
@@ -35,6 +42,7 @@ clustering:
     out_legacy_dir: /tmp/clusters/clusters
 
 mapgen:
+    <<: *GLOBALS
     mode: on
     cluster_dir: /tmp/clusters
     raw_lines: /tmp/raw_lines
@@ -43,6 +51,7 @@ mapgen:
     chosen_docs_for_map: final_map.mm
 
 vizbuilder:
+    <<: *GLOBALS
     mode: on
     name: clusterdescription
     input_lines: final_map.mm

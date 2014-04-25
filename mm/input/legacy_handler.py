@@ -21,7 +21,7 @@ class LegacyHandler:
             return token_max, num_docs_with_term
 
         self.data = {}
-        with open(legacy_helper_config_dict['input_json_file']) as in_json, open(legacy_helper_config_dict['doc_metadata']) as doc_meta_json:
+        with open(legacy_helper_config_dict['mm_standard_input']) as in_json, open(legacy_helper_config_dict['doc_metadata']) as doc_meta_json:
             self.data = json.load(in_json)
             self.doc_metadata = json.load(doc_meta_json)
         self.global_tokens = self.data['global_tokens']

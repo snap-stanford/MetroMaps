@@ -1,27 +1,36 @@
+global: &GLOBALS
+    doc_metadata: domains/lotr/data/doc_meta.json
+
+
+
 input_helper:
+    <<: *GLOBALS
     mode: on
     name: whitelistcounter
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
 
 legacy_helper:
+    <<: *GLOBALS
     mode: on
-    doc_metadata: domains/lotr/data/doc_meta.json
     num_timeslices: 20
     
 
 clustering:
+    <<: *GLOBALS
     mode: on
     similarity_merge: .95 # <intersection> / <small size> above this limit merges
     dilution_merge: .1
     
 
 mapgen:
+    <<: *GLOBALS
     mode: on
     chosen_lines: domains/lotr/out/final/lotr.mm
     chosen_lines_json: domains/lotr/out/final/lotr.json
 
 vizbuilder:
+    <<: *GLOBALS
     mode: on
     name: clusterdescription
     input_lines_json: domains/lotr/out/final/lotr.json

@@ -79,7 +79,7 @@ class WhiteListCounter():
         
 
        
-        together_out = self.outfile
+        together_out = self.mm_standard_input
         with open(together_out,'w') as out_file:
             d={}
             d['global_tokens'] = self.token_to_id
