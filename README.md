@@ -72,10 +72,12 @@ All of the defaults are set in [mm/default.yaml] and overwritten in your own con
 #### Section `global:`
 The fields in this section are accessible to all other sections. We include three fields here:
 - log_level: `debug` or `info` based on your desired level of verbosity
-- **doc_metadata**: name of your document metadata file,e.g. `domains/lotr/doc_metadata.json`. The format should mimic [LOTR metadata].
+- **doc_metadata**: relative path to your document metadata file, e.g. `domains/lotr/doc_meta.json`. The format should mimic [LOTR metadata].
 - mm_standard_input: name of a json file to which the standard input will be written to. Unless you want to save this file in a permanent place, _you can leave this field blank_ and view temporary output in `/tmp/mm_input.json` if needed.
 
-[LOTR metadata]: 
+[LOTR metadata]: https://github.com/snap-stanford/MetroMaps/blob/master/domains/lotr/data/doc_meta.json
+
+
 
 <a name="input_helper"></a>
 #### Section `input_helper:`
