@@ -168,5 +168,5 @@ In design, `vizbuilder` is similar to `input_helper` in that you choose which vi
 - [lotr.yaml] 
 - [default.yaml] - values are populated from this file if not mentioned in yours
 
-[lotr.yaml]: 
-[default.yaml]: 
+[lotr.yaml]: https://github.com/snap-stanford/MetroMaps/blob/master/lotr.yaml
+[default.yaml]: https://github.com/snap-stanford/MetroMaps/blob/master/mm/default.yaml
