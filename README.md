@@ -73,7 +73,7 @@ All of the defaults are set in [mm/default.yaml] and overwritten in your own con
 The fields in this section are accessible to all other sections. We include three fields here:
 - log_level: `debug` or `info` based on your desired level of verbosity
 - **doc_metadata**: relative path to your document metadata file, e.g. `domains/lotr/doc_meta.json`. The format should mimic [LOTR metadata].
-- mm_standard_input: name of a json file to which the standard input will be written to. Unless you want to save this file in a permanent place, _you can leave this field blank_ and view temporary output in `/tmp/mm_input.json` if needed.
+- mm_standard_input: name of a json file to which the standard input will be written to. Unless you want to save this file in a permanent place, _you can leave this field blank_ and view temporary output in `/tmp/mm_input.json` if needed. The required JSON fields of this file are described in [docs/formats/mm_standard_input.md]
 
 [LOTR metadata]: https://github.com/snap-stanford/MetroMaps/blob/master/domains/lotr/data/doc_meta.json
 
@@ -89,26 +89,26 @@ and producing the JSON file specified in `global.mm_standard_input`. This file, 
 
 In the `name` field, you should specify which helper you want to run. There are two options:
 
-- [`whitelistcounter`] This keeps track of words specified 
-- [`blacklistcounter`]
+- [`whitelistcounter`] This keeps track of words specified in the file under `whitelist:`
+- [`blacklistcounter`] This keeps track of all words that do not appear in the file listed under `blacklist:` and appear more frequently than the number specified in `discard_frequency` 
 
 There is currently only one input-helper available, called `whitelistcounter`. 
 This input-helper only considers tokens that appear on the whitelist. You are encouraged to write your own input_helper for your own domain, just make sure
-it creates the fields above. If you write your own input-helper place it in the `mm/inputhelpers` directory. Specify the input-helper you wish to use by using its filename in the `name:` field in the input_helper section of the configuration file. Any other fields specified in this section get sent to your input helper as a dictionary on instantiation.
+it creates the fields listed below. If you write your own input-helper place it in the `mm/inputhelpers` directory. Specify the input-helper you wish to use by using its filename in the `name:` field in the input_helper section of the configuration file. Any other fields specified in this section get sent to your input helper as a dictionary on instantiation.
 
-###### `name: whitelisthelper`
-A sample input-helper. Counts tokens that appear in the whitelist (file specified under `whitelist` in which tokens are separated with new-lines).
-
+Example (including fields for both whitelistcounter and blacklistcounter): 
     mode: "on" or "off" specifies whether to run the input_helper or not
-    name: whitelistcounter 
+    name: whitelistcounter or blacklistcounter
     encoding: UTF-8 # output encoding of tokens and ids
     in_encoding: cp1252 #input encoding (encoding used on your input files)
     whitelist: filename (newline separated white-list tokens) 
+    blacklist: filename (newline spearated)
+    discard_frequency: 2 (if word appears this number of times or less, it's discarded when blacklistcounter is used)
     input_directory: directory in which input files are stored 
     outfile: output JSON files with the required fields
 
-
-## `legacy_helper`
+<a name="slicing"></a>
+#### Section `slicing`
 Contains the following fields. 
 
     mode: "on" or "off" whether to run this or not
@@ -121,7 +121,8 @@ Contains the following fields.
     
 The important field to specify here is `doc_metadata` which contains a list of document metadata, with each document having `name`, `id`, and `timestamp`.
 
-##clustering:
+<a name="clustering"></a>
+#### Section `clustering:`
 
     mode: "on" or "off" to run or not
     input_json: *score_JSON 
@@ -135,7 +136,8 @@ The important field to specify here is `doc_metadata` which contains a list of d
 
 Clustering is done through clique-perculation and communities are combined depending on the similarity and dilution_merge fields specify the parameters that create clusters. 
 
-##mapgen:
+<a name="clustering"></a>
+#### Section `mapgen:`
 The important fields here are `chosen_lines` and `chosend_lines_json`. The others are temporary files.
     mode: "on" or "off" to run it or not
     cluster_dir: /tmp/clusters
@@ -144,7 +146,8 @@ The important fields here are `chosen_lines` and `chosend_lines_json`. The other
     chosen_lines: final_map.mm (human readable )
     chosen_lines_json: chosen_lines.json
     
-##vizbuilder:
+<a name="vizbuilder"></a>
+#### Section `vizbuilder:`
 
 In design, `vizbuilder` is similar to `input_helper` in that you choose which visualization builder to run (by specifying the name field). Currently there is only one option, but I am working hard to increase this number. The only one currently available is `clusterdescription` which labels each cluster with the words describing the cluster. 
 
@@ -159,3 +162,11 @@ In design, `vizbuilder` is similar to `input_helper` in that you choose which vi
 
 
 [mm/default.yaml]: https://github.com/snap-stanford/MetroMaps/blob/master/mm/default.yaml
+
+### Example Configurations:
+
+- [lotr.yaml] 
+- [default.yaml] - values are populated from this file if not mentioned in yours
+
+[lotr.yaml]: 
+[default.yaml]: 

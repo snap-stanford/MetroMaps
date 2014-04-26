@@ -12,7 +12,7 @@ input_helper:
     in_encoding: cp1252
     whitelist: specify_your_whitelist_file_here # FILL OUT example: domains/lotr/data/whitelist.txt (new-line separated)
     blacklist: specify_your_blacklist_here # Required if choosing blacklistcounter
-    discard_frequency: specify_freq # Required if blacklistcounter
+    discard_frequency: 1 # Required if blacklistcounter
     input_directory: split_input_files_here # FILL OUT example: domains/lotr/data/rawtext
         
 

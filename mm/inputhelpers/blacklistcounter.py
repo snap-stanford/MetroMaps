@@ -75,7 +75,7 @@ class BlackListCounter():
         # Cannot delete during iteration, so saving the keys
         tokens_to_delete = []
         for token, count in self.total_counts.iteritems():
-            if count <= self.discard_frequency:
+            if count <= int(self.discard_frequency):
                 tokens_to_delete += [token]
 
         for token in tokens_to_delete:
