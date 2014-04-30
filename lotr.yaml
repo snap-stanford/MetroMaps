@@ -2,7 +2,6 @@ global: &GLOBALS
     doc_metadata: domains/lotr/data/doc_meta.json
 
 
-
 input_helper:
     <<: *GLOBALS
     mode: off

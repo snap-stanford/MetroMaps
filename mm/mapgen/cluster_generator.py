@@ -182,9 +182,15 @@ class ClusterGenerator(object):
                 logging.debug('Graph written to %s' % out_file)
 
             clusters = []
+            k_values = []
             for k in range(2, max(node_degrees.values())-2):
                 communities = self.clique_percolation(g, k, id_to_token)
                 clusters += communities
+                if k >= 5 and (len(communities) == 1):
+                    logging.debug('Stopping at k %i' % k)
+                    break
+                else:
+                    logging.debug('Clique Perc with k=%i' % k)
                 # Communities = snap.TIntIntVV()
                 # snap.TCliqueOverlap_GetCPMCommunities(g, k+2, Communities)
                     
