@@ -30,7 +30,7 @@ def Run_slicing_handler(configs):
         logging.info("Converting to legacy format")
         legacy_handler = mm.input.SlicingHandler(legacy_configs)
         legacy_handler.write()
-        logging.info("Legacy format written to %s" %(configs.get('legacy_helper').get('output_dir')))
+        logging.info("Legacy format written to %s" %(legacy_configs.get('output_dir')))
 
 def Run_clustering_handler(configs):
     clustering_configs = configs.get('clustering',{})

@@ -5,7 +5,9 @@ global: &GLOBALS
 input_helper:
     <<: *GLOBALS
     mode: off
-    name: whitelistcounter
+    name: blacklistcounter
+    blacklist: domains/lotr/data/sample_blacklist.txt
+    discard_frequency: 30
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
 
@@ -18,6 +20,9 @@ slicing:
 clustering:
     <<: *GLOBALS
     mode: on
+    min_freq_in_doc: 2 # only accept tokens appearing at least twice per doc
+    tfidf_accept: 3.5 # accept tfidf above this
+    max_tokens_per_doc: 30 # if this number is too high, then clique perc will take ages
     similarity_merge: .95 # <intersection> / <small size> above this limit merges
     dilution_merge: .1
     
