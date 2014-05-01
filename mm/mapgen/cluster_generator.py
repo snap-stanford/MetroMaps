@@ -20,6 +20,9 @@ class ClusterGenerator(object):
         self.similarity_merge = float(config.get('similarity_merge'))
         self.dilution_merge = float(config.get('dilution_merge'))
         self.out_legacy_dir = config.get('out_legacy_dir')
+        self.tfidf_accept = float(config.get('tfidf_accept'))
+        self.max_tokens_per_doc = int(config.get('max_tokens_per_doc'))
+        self.min_freq_in_doc = int(config.get('min_freq_in_doc'))
         if not os.path.exists(self.out_legacy_dir):
             logging.info('Created directory %s' % self.out_legacy_dir)
             os.makedirs(self.out_legacy_dir)
@@ -80,13 +83,19 @@ class ClusterGenerator(object):
         node_degrees = {}
         id_to_token = {}
         for doc in doc_data:
-            token_ids = [t['id'] for t in doc["tokens"]]
-            token_ids = []
-            for t in doc["tokens"]:
-                tid = t['id']
-                token_ids += [tid]
-                id_to_token[int(tid)] = t
+            sorted_tokens = sorted([x for x in doc["tokens"] 
+                if (x["token_doc_count"] >= self.min_freq_in_doc and x["tfidf"] >= self.tfidf_accept)], key=lambda x :x['tfidf'])
+            tokens_we_want = sorted_tokens[-self.max_tokens_per_doc:]
 
+            token_ids = []
+            for token in tokens_we_want:
+                token_ids += [token['id']]
+                # current_token_list = id_to_token.get(token['id'], [])
+                # current_token_list += [token]
+                # id_to_token[token['id']] = current_token_list
+                id_to_token[int(token['id'])] = token
+
+            
             for (node_1, node_2) in combinations(token_ids,2):
                 if not g.IsNode(int(node_1)):
                     g.AddNode(int(node_1))
@@ -176,21 +185,21 @@ class ClusterGenerator(object):
 
             current_timeslice = self.timeslices[i]
             (g, node_degrees, id_to_token) = self.ccg(current_timeslice)
+            logging.debug('CCG graph created')
+
             if self.graphing_on:
                 out_file = os.path.join(self.graphing_out, ("graph_timeslice_%s.pdf" % str(i)))
                 self.draw_graph(g,out_file)
                 logging.debug('Graph written to %s' % out_file)
 
             clusters = []
-            k_values = []
+            
             for k in range(2, max(node_degrees.values())-2):
+                logging.debug('Running Clique Percolation with k=%i'%k)
                 communities = self.clique_percolation(g, k, id_to_token)
                 clusters += communities
-                if k >= 5 and (len(communities) == 1):
-                    logging.debug('Stopping at k %i' % k)
-                    break
-                else:
-                    logging.debug('Clique Perc with k=%i' % k)
+                
+               
                 # Communities = snap.TIntIntVV()
                 # snap.TCliqueOverlap_GetCPMCommunities(g, k+2, Communities)
                     
@@ -235,7 +244,8 @@ class ClusterGenerator(object):
                             tokens_joined = ', '.join(tokens)
                             num_tokens = len(tokens)
                             text = 'Cluster: %i %s\n' % (num_tokens, tokens_joined)
-                            legacy_out_cluster.write(text)
+                            legacy_out_cluster.write(text.encode('utf-8'))
+
 
 
 

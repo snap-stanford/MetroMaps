@@ -1,0 +1,44 @@
+global: &GLOBALS
+    doc_metadata: domains/lotr/data/doc_meta.json
+
+
+input_helper:
+    <<: *GLOBALS
+    mode: off
+    name: blacklistcounter
+    blacklist: domains/lotr/data/sample_blacklist.txt
+    discard_frequency: 30
+    whitelist: domains/lotr/data/whitelist.txt
+    input_directory: domains/lotr/data/rawtext
+
+slicing:
+    <<: *GLOBALS
+    mode: off
+    num_timeslices: 20
+    
+
+clustering:
+    <<: *GLOBALS
+    mode: on
+    min_freq_in_doc: 2 # only accept tokens appearing at least twice per doc
+    tfidf_accept: 3.5 # accept tfidf above this
+    max_tokens_per_doc: 30 # if this number is too high, then clique perc will take ages
+    similarity_merge: .95 # <intersection> / <small size> above this limit merges
+    dilution_merge: .1
+    
+
+mapgen:
+    <<: *GLOBALS
+    mode: on
+    chosen_lines: domains/lotr/out/final/lotr.mm
+    chosen_lines_json: domains/lotr/out/final/lotr.json
+
+vizbuilder:
+    <<: *GLOBALS
+    mode: on
+    name: clusterdescription
+    input_lines_json: domains/lotr/out/final/lotr.json
+    final_map_viz_json: domains/lotr/out/final/lotr_viz.json
+    producehtml: on
+    website_output_dir: domains/lotr/out
+    webpage_name: LOTR.html
