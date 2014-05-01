@@ -170,3 +170,56 @@ In design, `vizbuilder` is similar to `input_helper` in that you choose which vi
 
 [lotr.yaml]: https://github.com/snap-stanford/MetroMaps/blob/master/lotr.yaml
 [default.yaml]: https://github.com/snap-stanford/MetroMaps/blob/master/mm/default.yaml
+
+
+
+### Common Problem with SNAP.PY installation:
+
+Here is what someone suggested to do in the CS224W class that extensively used SNAP and SNAP.PY:
+
+    Christoph E. Wertz 6 minutes ago
+    [christoph@hazel] $ otool -L snap-0.7-dev-macosx10.7.5-x64-py2.7/_snap.so 
+    snap-0.7-dev-macosx10.7.5-x64-py2.7/_snap.so:
+    _snap.so (compatibility version 0.0.0, current version 0.0.0)
+    /System/Library/Frameworks/Python.framework/Versions/2.7/Python (compatibility version 2.7.0, current version 2.7.1)
+    /usr/lib/libstdc++.6.dylib (compatibility version 7.0.0, current version 52.0.0)
+    /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 159.1.0)
+     
+     
+    Tue Sep 24 23:27:28 : ~/Development/stanford/cs224w
+    [christoph@hazel] $ install_name_tool -change /System/Library/Frameworks/Python.framework/Versions/2.7/Python /usr/local/Cellar/python/2.7.5/Frameworks/Python.framework/Python snap-0.7-dev-macosx10.7.5-x64-py2.7/_snap.so 
+     
+    Tue Sep 24 23:34:54 : ~/Development/stanford/cs224w
+    [christoph@hazel] $ otool -L snap-0.7-dev-macosx10.7.5-x64-py2.7/_snap.so 
+    snap-0.7-dev-macosx10.7.5-x64-py2.7/_snap.so:
+    _snap.so (compatibility version 0.0.0, current version 0.0.0)
+    /usr/local/Cellar/python/2.7.5/Frameworks/Python.framework/Python (compatibility version 2.7.0, current version 2.7.1)
+    /usr/lib/libstdc++.6.dylib (compatibility version 7.0.0, current version 52.0.0)
+    /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 159.1.0)
+     
+     
+    Tue Sep 24 23:38:14 : ~/Development/stanford/cs224w
+    [christoph@hazel] $ cp snap-0.7-dev-macosx10.7.5-x64-py2.7/snap.py .
+    Tue Sep 24 23:38:24 : ~/Development/stanford/cs224w
+    [christoph@hazel] $ cp snap-0.7-dev-macosx10.7.5-x64-py2.7/_snap.so .
+    Tue Sep 24 23:38:32 : ~/Development/stanford/cs224w
+    [christoph@hazel] $ python quick_test.py 
+    SUCCESS, your version of Snap.py is 0.7
+    Tue Sep 24 23:38:38 : ~/Development/stanford/cs224w
+    [christoph@hazel] $ 
+     
+     
+     
+    Christoph E. Wertz 1 minute ago 
+    [christoph@hazel] $ ll /usr/local/Cellar/python/2.7.5/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/_snap.so 
+    -rwxr-xr-x  1 root  admin  26767992 Sep 22 19:38 /usr/local/Cellar/python/2.7.5/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/_snap.so
+    Tue Sep 24 23:43:05 : ~/Development/stanford/cs224w/snap-0.7-dev-macosx10.7.5-x64-py2.7
+    [christoph@hazel] $ sudo cp _snap.so !$
+    sudo cp _snap.so /usr/local/Cellar/python/2.7.5/Frameworks/Python.framework/Versions/2.7/lib/python2.7/site-packages/_snap.so
+     
+     
+    Christoph E. Wertz 1 minute ago 
+    [christoph@hazel] $ python quick_test.py 
+    SUCCESS, your version of Snap.py is 0.7
+    Tue Sep 24 23:44:16 : ~/Development/stanford/cs224w
+    [christoph@hazel] $ 
