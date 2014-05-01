@@ -4,14 +4,14 @@ global: &GLOBALS
 
 input_helper:
     <<: *GLOBALS
-    mode: off
+    mode: on
     name: whitelistcounter
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
 
 slicing:
     <<: *GLOBALS
-    mode: off
+    mode: on
     num_timeslices: 20
     
 
