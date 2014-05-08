@@ -5,6 +5,8 @@ import mm.inputhelpers
 import mm.inputhelpers.factory
 import mm.input
 import mm.mapgen
+import mm.slicing
+import mm.slicing.factory
 import mm.viz
 import logging
 import yaml
@@ -25,12 +27,12 @@ def Run_input_handler(configs):
 
 
 def Run_slicing_handler(configs):
-    legacy_configs = configs.get('slicing')
-    if (legacy_configs.get('mode')):
+    slicing_conf = configs.get('slicing')
+    if (slicing_conf.get('mode')):
         logging.info("Converting to legacy format")
-        legacy_handler = mm.input.SlicingHandler(legacy_configs)
+        legacy_handler = mm.slicing.factory.ReadConfig(configs.get('slicing'))
         legacy_handler.write()
-        logging.info("Legacy format written to %s" %(legacy_configs.get('output_dir')))
+        logging.info("Legacy format written to %s" % (slicing_conf.get('output_dir')))
 
 def Run_clustering_handler(configs):
     clustering_configs = configs.get('clustering',{})

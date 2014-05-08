@@ -173,7 +173,8 @@ class SlicingHandler:
 
             
 
-
+def construct(config_dict):
+    return SlicingHandler(config_dict)
 
 
 

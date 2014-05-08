@@ -4,7 +4,7 @@ global: &GLOBALS
 
 input_helper:
     <<: *GLOBALS
-    mode: on
+    mode: off
     name: whitelistcounter
     whitelist: domains/lotr/data/whitelist.txt
     input_directory: domains/lotr/data/rawtext
@@ -24,13 +24,13 @@ clustering:
 
 mapgen:
     <<: *GLOBALS
-    mode: on
+    mode: off
     chosen_lines: domains/lotr/out/final/lotr.mm
     chosen_lines_json: domains/lotr/out/final/lotr.json
 
 vizbuilder:
     <<: *GLOBALS
-    mode: on
+    mode: off
     name: clusterdescription
     input_lines_json: domains/lotr/out/final/lotr.json
     final_map_viz_json: domains/lotr/out/final/lotr_viz.json

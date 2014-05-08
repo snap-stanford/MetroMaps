@@ -24,25 +24,29 @@ input_helper:
 slicing:
     <<: *GLOBALS
     mode: on
+    name: standard
     output_dir: /tmp/query_result 
     doc_metadata: specify_doc_metadata_here ## FILL OUT
     num_timeslices: 20
     output_json: &score_JSON /tmp/legacy_handler_out.json
     choose_representative_token: on
     
-
+    
 clustering:
     <<: *GLOBALS
     mode: on
     input_json: *score_JSON 
     similarity_merge: 1 # <intersection> / <small size> above this limit merges
     dilution_merge: 0 # only <= below this number is merged. This is percentage of new terms that can be added
+    min_freq_in_doc: 0
+    tfidf_accept: 0
+    max_tokens_per_doc: 50
     output_json: &clusters_JSON /tmp/clusters.json
+
     graphing: off
     out_graph_dir: /tmp/timeslice_graphs/
     # Remove the following when cleaning project
     out_legacy_dir: /tmp/clusters/clusters
-
 mapgen:
     <<: *GLOBALS
     mode: on
